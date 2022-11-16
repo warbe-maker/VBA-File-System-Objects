@@ -1,0 +1,9 @@
+22-11-04 18:14:41 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-11-04 18:14:41                 >> Regression Test module mFso
+22-11-04 18:14:41 00,0000         |  >> mFsoTest.Test_00_Regression
+22-11-04 18:14:41 00,0020         |  |  >> mFsoTest.Test_00_Regression_Common_Services
+22-11-04 18:14:41 00,0026         |  |  |  >> mFsoTest.Test_01_File_Temp
+22-11-04 18:14:41 00,0360 00,0335 |  |  |  << mFsoTest.Test_01_File_Temp
+22-11-04 18:14:41 00,0371         |  |  |  >> mFsoTest.Test_02_File_Exists
+22-11-04 18:14:41 00,0404         |  |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
+22-11-04 18:14:41 00,1087 00,0684 |  |  |  |  << mFsoTest.TestProc_PrivateProfile_File
