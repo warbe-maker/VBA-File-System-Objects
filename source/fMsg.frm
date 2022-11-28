@@ -12,6 +12,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 Option Explicit
 ' -------------------------------------------------------------------------------
 ' UserForm fMsg Provides all means for a message with up to 5 separated text
@@ -247,6 +248,7 @@ Private iSectionsPropSpaced     As Long             ' number of prop. spaced sec
 Private iSectionsMonoSpaced     As Long             ' number of mono-spaced sections setup
 
 Public Property Let ModeLess(ByVal b As Boolean): bModeLess = b:    End Property
+
 Private Sub UserForm_Initialize()
     Const PROC = "UserForm_Initialize"
     
@@ -305,6 +307,9 @@ Private Sub UserForm_Terminate()
     Set dctSectsLabel = Nothing
     Set dctSectsMonoSpaced = Nothing
     Set dctSectsText = Nothing
+    If bModeLess Then
+        Application.EnableEvents = True
+    End If
 End Sub
 
 Public Property Get MonitorIsInitialized() As Boolean: MonitorIsInitialized = Not cllSteps Is Nothing:  End Property
@@ -1469,7 +1474,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.Source
+    If err_source = vbNullString Then err_source = Err.source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
