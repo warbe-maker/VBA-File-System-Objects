@@ -231,7 +231,7 @@ Private Function TestProc_PrivateProfile_File(ByVal ts_sections As Long, _
     sFile = mFso.FileTemp(tmp_extension:=".dat")
     For i = ts_sections To 1 Step -1
         For j = ts_values To 1 Step -1
-            mFso.FilePrivProfValue(pp_file:=sFile _
+            mFso.PPvalue(pp_file:=sFile _
                                  , pp_section:=TestProc_SectionName(i) _
                                  , pp_value_name:=TestProc_ValueName(i, j) _
                                   ) = TestProc_ValueString(i, j)
@@ -378,8 +378,8 @@ Public Sub Test_00_Regression_PrivateProfile_Services()
     mFsoTest.Test_94_PrivateProfile_Values
     mFsoTest.Test_96_PrivateProfile_Entry_Exists
     mFsoTest.Test_97_PrivateProfile_SectionsCopy
-    mFsoTest.Test_98_PrivateProfile_FilePrivProfReArrange
-    mFsoTest.Test_99_PrivateProfile_FilePrivProfReArrange_WithNoFileProvided
+    mFsoTest.Test_98_PrivateProfile_PPreorg
+    mFsoTest.Test_99_PrivateProfile_PPreorg_WithNoFileProvided
 
 xt: TestProc_RemoveTestFiles
     EoP ErrSrc(PROC)
@@ -942,7 +942,7 @@ Public Sub Test_91_PrivateProfile_SectionsNames()
     BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=3, ts_values:=3)
     
-    Set dct = mFso.FilePrivProfSectionNames(sFile)
+    Set dct = mFso.PPsectionNames(sFile)
     Debug.Assert dct.Count = 3
     Debug.Assert dct.Items()(0) = TestProc_SectionName(1)
     Debug.Assert dct.Items()(1) = TestProc_SectionName(2)
@@ -974,7 +974,7 @@ Public Sub Test_92_PrivateProfile_ValueNames()
     BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=5, ts_values:=3)
     
-    Set dct = mFso.FilePrivProfValues(pp_file:=sFile, pp_section:=TestProc_SectionName(2))
+    Set dct = mFso.PPvalues(pp_file:=sFile, pp_section:=TestProc_SectionName(2))
     EoP ErrSrc(PROC)
     Debug.Assert dct.Count = 3
     Debug.Assert dct.Keys()(0) = TestProc_ValueName(2, 1)
@@ -1008,22 +1008,22 @@ Public Sub Test_93_PrivateProfile_Value()
     sFile = TestProc_TempFile
             
     '~~ Test 1: Read non-existing value from a non-existing file
-    Debug.Assert mFso.FilePrivProfValue(pp_file:=sFile _
+    Debug.Assert mFso.PPvalue(pp_file:=sFile _
                            , pp_section:="Any" _
                            , pp_value_name:="Any" _
                             ) = vbNullString
     
     '~~ Test 2: Write values
-    mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
-    mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
-    mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
-    mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2)) = cyValue
+    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
+    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
+    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
+    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2)) = cyValue
     
     '~~ Test 2: Assert written values
-    Debug.Assert mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
-    Debug.Assert mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
-    Debug.Assert mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
-    cyResult = mFso.FilePrivProfValue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2))
+    Debug.Assert mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
+    Debug.Assert mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
+    Debug.Assert mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
+    cyResult = mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2))
     Debug.Assert cyResult = cyValue
     Debug.Assert VarType(cyResult) = vbCurrency
     
@@ -1055,7 +1055,7 @@ Public Sub Test_94_PrivateProfile_Values()
                                 )
 
     '~~ Test 1: All values of one section
-    Set dct = mFso.FilePrivProfValues(pp_file:=sFile _
+    Set dct = mFso.PPvalues(pp_file:=sFile _
                          , pp_section:=TestProc_SectionName(2) _
                           )
     '~~ Test 1: Assert the content of the result Dictionary
@@ -1068,10 +1068,10 @@ Public Sub Test_94_PrivateProfile_Values()
     Debug.Assert dct.Items()(2) = TestProc_ValueString(2, 3)
     
     '~~ Test 2: No section provided
-    Debug.Assert mFso.FilePrivProfValues(sFile, vbNullString).Count = 0
+    Debug.Assert mFso.PPvalues(sFile, vbNullString).Count = 0
 
     '~~ Test 3: Section does not exist
-    Debug.Assert mFso.FilePrivProfValues(sFile, "xxxxxxx").Count = 0
+    Debug.Assert mFso.PPvalues(sFile, "xxxxxxx").Count = 0
 
 xt: TestProc_RemoveTestFiles
     Set dct = Nothing
@@ -1099,20 +1099,20 @@ Public Sub Test_96_PrivateProfile_Entry_Exists()
     sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=3)
        
     '~~ Section not exists
-    Debug.Assert mFso.FilePrivProfSectionExists(pp_file:=sFile _
+    Debug.Assert mFso.PPsectionExists(pp_file:=sFile _
                                               , pp_section:=TestProc_SectionName(100) _
                                                ) = False
     '~~ Section exists
-    Debug.Assert mFso.FilePrivProfSectionExists(pp_file:=sFile _
+    Debug.Assert mFso.PPsectionExists(pp_file:=sFile _
                                               , pp_section:=TestProc_SectionName(9) _
                                               ) = True
     '~~ Value-Name exists
-    Debug.Assert mFso.FilePrivProfValueExists(pp_file:=sFile _
+    Debug.Assert mFso.PPvalueExists(pp_file:=sFile _
                                 , pp_section:=TestProc_SectionName(7) _
                                 , pp_value_name:=TestProc_ValueName(7, 3) _
                                  ) = True
     '~~ Value-Name not exists
-    Debug.Assert mFso.FilePrivProfValueExists(pp_file:=sFile _
+    Debug.Assert mFso.PPvalueExists(pp_file:=sFile _
                                 , pp_section:=TestProc_SectionName(7) _
                                 , pp_value_name:=TestProc_ValueName(6, 3) _
                                  ) = False
@@ -1130,9 +1130,9 @@ End Sub
 Public Sub Test_97_PrivateProfile_SectionsCopy()
 ' ----------------------------------------------------------------------------
 ' This test relies on successfully tests:
-' - Test_91_PrivateProfile_SectionsNames (mFso.FilePrivProfSectionNames)
+' - Test_91_PrivateProfile_SectionsNames (mFso.PPsectionNames)
 ' Iplicitely tested are:
-' - mFso.FilePrivProfSections Get and Let
+' - mFso.PPsections Get and Let
 ' ----------------------------------------------------------------------------
     Const PROC = "Test_97_PrivateProfile_SectionsCopy"
     
@@ -1149,22 +1149,22 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     '~~ Copy a specific section to a new target file
     SourceFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
     TargetFile = mFso.FileTemp(tmp_extension:=".dat")
-    sSectionName = mFso.FilePrivProfSectionNames(SourceFile).Items()(0)
-    mFso.FilePrivProfSectionsCopy pp_source:=SourceFile _
+    sSectionName = mFso.PPsectionNames(SourceFile).Items()(0)
+    mFso.PPsectionsCopy pp_source:=SourceFile _
                                 , pp_target:=TargetFile _
                                 , pp_sections:=sSectionName
     '~~ Assert result
-    Set dct = mFso.FilePrivProfSectionNames(TargetFile)
+    Set dct = mFso.PPsectionNames(TargetFile)
     Debug.Assert dct.Count = 1
     Debug.Assert dct.Keys()(0) = TestProc_SectionName(1)
     
     '~~ Test 1b ------------------------------------
     '~~ Copy a specific section to the target file of Test 1a
-    mFso.FilePrivProfSectionsCopy pp_source:=SourceFile _
+    mFso.PPsectionsCopy pp_source:=SourceFile _
                                 , pp_target:=TargetFile _
                                 , pp_sections:=TestProc_SectionName(8)
     '~~ Assert result
-    Set dct = mFso.FilePrivProfSectionNames(TargetFile)
+    Set dct = mFso.PPsectionNames(TargetFile)
     Debug.Assert dct.Count = 2
     Debug.Assert dct.Keys()(1) = TestProc_SectionName(8)
     fso.DeleteFile SourceFile
@@ -1174,9 +1174,9 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     '~~ Copy all sections to a new target file (will be re-ordered ascending thereby)
     SourceFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
     TargetFile = mFso.FileTemp(tmp_extension:=".dat")
-    mFso.FilePrivProfSectionsCopy pp_source:=SourceFile _
+    mFso.PPsectionsCopy pp_source:=SourceFile _
                                 , pp_target:=TargetFile _
-                                , pp_sections:=mFso.FilePrivProfSectionNames(SourceFile) _
+                                , pp_sections:=mFso.PPsectionNames(SourceFile) _
                                 , pp_merge:=False
     '~~ Assert result
     Debug.Assert mFso.FileArry(TargetFile)(0) = "[" & TestProc_SectionName(1) & "]"
@@ -1194,11 +1194,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_98_PrivateProfile_FilePrivProfReArrange()
+Public Sub Test_98_PrivateProfile_PPreorg()
 ' ----------------------------------------------------------------------------
 ' Rearrange all sections and all names therein
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_98_PrivateProfile_FilePrivProfReArrange"
+    Const PROC = "Test_98_PrivateProfile_PPreorg"
     
     On Error GoTo eh
     Dim sFile   As String
@@ -1211,7 +1211,7 @@ Public Sub Test_98_PrivateProfile_FilePrivProfReArrange()
     Debug.Assert vFile(0) = "[" & TestProc_SectionName(10) & "]"
     Debug.Assert vFile(1) = TestProc_ValueName(10, 10) & "=" & TestProc_ValueString(10, 10)
     
-    mFso.FilePrivProfReArrange sFile
+    mFso.PPreorg sFile
     '~~ Assert result
     vFile = mFso.FileArry(sFile)
     Debug.Assert vFile(0) = "[" & TestProc_SectionName(1) & "]"
@@ -1228,7 +1228,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_99_PrivateProfile_FilePrivProfReArrange_WithNoFileProvided()
+Public Sub Test_99_PrivateProfile_PPreorg_WithNoFileProvided()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
@@ -1241,7 +1241,7 @@ Public Sub Test_99_PrivateProfile_FilePrivProfReArrange_WithNoFileProvided()
     BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
     
-    mFso.FilePrivProfReArrange sFile
+    mFso.PPreorg sFile
     '~~ Assert result
     vFile = mFso.FileArry(sFile)
     Debug.Assert vFile(0) = "[" & TestProc_SectionName(1) & "]"
