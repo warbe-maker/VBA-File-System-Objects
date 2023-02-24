@@ -47,20 +47,17 @@ Simplifies the handling of .ini, .cfg, or any other file organized by [section] 
 | _pp\_value\_name_  | String expression, the name of a _Value_ under a given _Section_                |
 | _pp\_value_        | Variant expression, will be written to the file as string                       |
 
-| Name                         | Service                                      |
-| ---------------------------- | -------------------------------------------- |
-| _FilePrivProfNameRemove_     | Removes a named value entry from a given section in a _PrivateProfile File_ file |
-|                              | Syntax:<br>`mFso.NameRemove file, section, valuename` |
-| _FilePrivProfSections_       | Returns the sections if a _PrivateProfile File_ as Dictionary with the _Section_ as the key and the _Values_ (see below) as the item |
-| _FilePrivProfSectionExists_  | Returns True when a given section [.....] exists in a _PrivateProfile File_ file. |
-|                | Syntax:<br>`If mFso.SectionExists(file, section) Then ...`|
-| _FilePrivProfSectionsCopy_   | Copies named sections from a source _PrivateProfile File_ file to a target _PrivateProfile File_ file optionally replaced or merged in the target file. |
-|                              | Syntax:<br>`mFso.SectionsCopy source-file, target-file, [sections], [replace]`|
-| _FilePrivProfSectionsRemove_ | Removes named or all sections [.....] from a  _PrivateProfile File_ file |
-|                              | Syntax:<br>`mFso.SectionsRemove file, section`
-| _FilePrivProfValue_          | Get: Returns the value for a given name from a given section from a _PrivateProfile File_ <br>Syntax: `v = mFso.Value(file, section, name)`|
-|                              | Let: write a value with a given name under a given section in a _PrivateProfile File_ <br>Syntax: `mFso.Value(file, section, name) = value`|
-| _FilePrivProfValues_         | Returns the values from a given _PrivateProfile File_ under a given _Section_ as Dictionary with the value name as the key and the value as the item.<br>Syntax: `Set dct = mFso.Values(file, section)` |
+| Name              | Service                                      |
+| ------------------| -------------------------------------------- |
+| PPsectionExists   |   Returns TRUE when a given section exists in a given PrivateProfile file |
+| PPsectionNames    | Returns a Dictionary of all section names [.....] in a PrivateProfile file.
+| PPsections        | Get Returns named - or if no names are provided all - sections as Dictionary with the section name as the key and the Values Dictionary as item<br>Let Writes all sections provided as a Dictionary (as above) |
+| PPremoveSections  | Removes the sections provided via their name. When no section names are provided (pp_sections) none are removed.
+| PPreorg           | Reorganizes all sections and their value-names in a PrivateProfile file by ordering everything in ascending sequence.|
+| PPvalue           | Get Reads a named value from a PrivateProfile file<br>Let Writes a named value to a PrivateProfile file |
+| PPvalueNameExists | Returns TRUE when a value-name exists in a PrivatProfile file within a given section |
+| PPvalueNames      | Returns a Dictionary of all value-names within given sections in a PrivateProfile file with the value-name and the section name as key (<name>[section]) and the value as item, the names in ascending order. Section names may be provided as a comma delimited string. a Dictionary or Collection. When no section names are provided all names of all sections are returned |
+| PPvalues          | Returns the value-names and values of a given section in a PrivateProfile file as Dictionary with the value-name as the key (in ascending order) and the value as item.|
 
 ### Folder service
 | Service                 | Description                                  |
@@ -74,6 +71,60 @@ Simplifies the handling of .ini, .cfg, or any other file organized by [section] 
 
 ## Usage
 See table above and inline doku.
+### Hint for using the PrivateProfile services
+When using them in a VB-Project the following scheme is recommendable. Create a dedicated component (Standard Module) in this example named mIni and copy the below code into it. The advantages:
+- Each value-name is a dedicated Get/Let property<br>
+Example: `mIni.Any = "xxxxx"` to write and `s = mIni.Any` to read
+- The PrivateProfile file's name is used only with the internal Private Value Get/Let services
+- The sections are hidden by providing unique value-names. 
+```vb
+Option Explicit
+' ---------------------------------------------------------------------------
+' Standard Module mIni
+' Maintains PrivateProfile file xxxx.ini (IniFileFullName).
+' ---------------------------------------------------------------------------
+Private Const VNAME_ANY As String = "AnyName"
+
+Public Property Get IniFileFullName() As String
+    CompManCfgFileFullName = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "XXXX.ini")
+End Property
+
+Public Property Get Any() As String
+    Any = Value(VNAME_ANY, "ThisSection")
+End Property
+
+Public Property Let Any(ByVal s As String)
+    Value(VNAME_ANY, "ThisSection") = s
+End Property
+
+
+Private Property Get Value(Optional ByVal pp_value_name As String, _
+                           Optional ByVal pp_section As String) As Variant
+' ----------------------------------------------------------------------------
+' Returns the value named (pp_value_name) from the section (pp_section) in the
+' PrivateProfile file IniFileFullName.
+' ----------------------------------------------------------------------------
+    Value = mFso.PPvalue(pp_file:=IniFileFullName _
+                      , pp_section:=pp_section _
+                      , pp_value_name:=pp_value_name _
+                       )
+End Property
+
+Private Property Let Value(Optional ByVal pp_value_name As String, _
+                           Optional ByVal pp_section As String, _
+                                    ByVal pp_value As Variant)
+' ----------------------------------------------------------------------------
+' Writes the value (pp_value) under the name (pp_value_name) into the
+' CompManCfgFileFullName.
+' ----------------------------------------------------------------------------
+    mFso.PPvalue(pp_file:=IniFileFullName _
+               , pp_section:=pp_section _
+               , pp_value_name:=pp_value_name _
+                ) = pp_value
+End Property
+
+```
+
 > This _Common Component_ is prepared to function completely autonomously (download, import, use) but at the same time to integrate with my personal 'standard' VB-Project design. See [Conflicts with personal and public _Common Components_][3] for more details.
 
 
