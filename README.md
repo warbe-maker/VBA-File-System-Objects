@@ -70,41 +70,50 @@ Simplifies the handling of .ini, .cfg, or any other file organized by [section] 
 2. In the VBE add a Reference to _Microsoft Scripting Runtime_
 
 ## Usage
-See table above and inline doku.
-### Hint for using the PrivateProfile services
-When using them in a VB-Project the following scheme is recommendable. Create a dedicated component (Standard Module) in this example named mIni and copy the below code into it. The advantages:
-- Each value-name is a dedicated Get/Let property<br>
-Example: `mIni.Any = "xxxxx"` to write and `s = mIni.Any` to read
-- The PrivateProfile file's name is used only with the internal Private Value Get/Let services
-- The sections are hidden by providing unique value-names. 
+### PrivateProfile services
+The advantages of using the service, specifically when using the below coding scheme:
+- Each value-name/value is a dedicated Get/Let property, the values name is used only internally by the  service thereby preventing any typos<br>
+Write: `mXxxIni.AnyValue = "xxxxx"`<br>
+Read:   `Dim sValue As String`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sValue = mXxxIni.AnyValue`
+Write value under a specific section (in case not hidden by the value-name/value Properties:<br>
+Write: `mXxxIni.AnyValue("ThisSection") = "xxxxx"`<br>
+Read:   `Dim sValue As String`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sValue = mXxxIni.AnyValue("ThisSection")`
+- The PrivateProfile file's name is used only with the internal Private _Value_ Get/Let services
+- Sections are (optionally) hidden by providing unique value-names.The following scheme is recommendable. Create a dedicated component (Standard Module) and copy the below code into it.  
+Copy the below code into a new module dedicated to the maintained PrivateProfile file (mXxxIni in this example).
+
 ```vb
 Option Explicit
 ' ---------------------------------------------------------------------------
-' Standard Module mIni
-' Maintains PrivateProfile file xxxx.ini (IniFileFullName).
+' Standard Module mIni: Maintains the PrivateProfile file Xxx.ini in 
+' --------------------- ThisWorkbook's parent folder.
+'
+' W. Rauschenberger, Berlin Feb 2023
 ' ---------------------------------------------------------------------------
 Private Const VNAME_ANY As String = "AnyName"
 
-Public Property Get IniFileFullName() As String
-    CompManCfgFileFullName = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "XXXX.ini")
+Public Property Get XxxIniFullName() As String
+    XxxIniFullName = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "Xxx.ini")
 End Property
 
-Public Property Get Any() As String
-    Any = Value(VNAME_ANY, "ThisSection")
+Public Property Get AnyValue(Optional ByVal pp_section As String) As String
+    AnyValue = Value(VNAME_ANY, pp_section)
 End Property
 
-Public Property Let Any(ByVal s As String)
-    Value(VNAME_ANY, "ThisSection") = s
+Public Property Let AnyValue(Optional ByVal pp_section As String, _
+                                      ByVal pp_value As String)
+    Value(VNAME_ANY, pp_section) = pp-value
 End Property
-
 
 Private Property Get Value(Optional ByVal pp_value_name As String, _
                            Optional ByVal pp_section As String) As Variant
 ' ----------------------------------------------------------------------------
 ' Returns the value named (pp_value_name) from the section (pp_section) in the
-' PrivateProfile file IniFileFullName.
+' PrivateProfile file XxxIniFullName.
 ' ----------------------------------------------------------------------------
-    Value = mFso.PPvalue(pp_file:=IniFileFullName _
+    Value = mFso.PPvalue(pp_file:=XxxIniFullName _
                       , pp_section:=pp_section _
                       , pp_value_name:=pp_value_name _
                        )
@@ -117,13 +126,28 @@ Private Property Let Value(Optional ByVal pp_value_name As String, _
 ' Writes the value (pp_value) under the name (pp_value_name) into the
 ' CompManCfgFileFullName.
 ' ----------------------------------------------------------------------------
-    mFso.PPvalue(pp_file:=IniFileFullName _
+    mFso.PPvalue(pp_file:=XxxIniFullName _
                , pp_section:=pp_section _
                , pp_value_name:=pp_value_name _
                 ) = pp_value
 End Property
-
 ```
+### Other services
+#### Exists
+Universal File System Objects existence check whereby the existence check depends on the provided arguments. The service has the following named arguments:
+
+| _ex\_folder_ |_ex_file_ |_ex\_section_ |_ex\_value\_name_ |Service returns TRUE when |
+|:------------:|:--------:|:------------:|:----------------:|:-------------------------|
+| x            |          |              |                  | The folder exists        |
+| x            | x        |              |                  | The LIKE file exists in the provided folder |
+|              | x        |              |                  | The file exists (needs to be a full path)   |
+|              | x        | x            |                  | The section exists in the PrivateProfile file |
+|              | x        | x            | x                | The value exists in the provided PrivateProfile file's section |
+
+All existing files are additionally returned in a collection (argument _ex\_result\_files_).
+An existing folder is additionally returned as folder object (argument _ex\_result\_folder_).
+
+
 
 > This _Common Component_ is prepared to function completely autonomously (download, import, use) but at the same time to integrate with my personal 'standard' VB-Project design. See [Conflicts with personal and public _Common Components_][3] for more details.
 
