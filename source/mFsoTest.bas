@@ -723,12 +723,12 @@ Public Sub Test_09_File_Differs_False()
     Dim f2      As File
     Dim dctDiff As Dictionary
     
-    BoP ErrSrc(PROC), "fd_file1 = ", f1.Name, "fd_file2 = ", f2.Name
     Test_Status = ErrSrc(PROC)
     ' Prepare
-    sFile = "E:\Ablage\Excel VBA\DevAndTest\Common\File\mFso.bas"
-    Set f1 = fso.GetFile("E:\Ablage\Excel VBA\DevAndTest\Common\File\mFso.bas")
-    Set f2 = fso.GetFile("E:\Ablage\Excel VBA\DevAndTest\Common\File\mFso.bas")
+    sFile = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\mFso.bas"
+    Set f1 = fso.GetFile(sFile)
+    Set f2 = fso.GetFile(sFile)
+    BoP ErrSrc(PROC), "fd_file1 = ", f1.Name, "fd_file2 = ", f2.Name
     
     ' Test
     Set dctDiff = mFso.FileDiffers(fd_file1:=f1, fd_file2:=f2, fd_ignore_empty_records:=True)
@@ -764,8 +764,8 @@ Public Sub Test_10_File_Arry_Get_Let()
     BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
-    sFile1 = "E:\Ablage\Excel VBA\DevAndTest\Common\File\mFso.bas"
-    sFile2 = "E:\Ablage\Excel VBA\DevAndTest\Common\File\mFso.bas"
+    sFile1 = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
+    sFile2 = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
     
     sFile1 = mFso.FileTemp()
     sFile2 = mFso.FileTemp()
@@ -822,16 +822,17 @@ Public Sub Test_11_File_Search()
     
     On Error GoTo eh
     Dim cll As Collection
+    Dim fso As New FileSystemObject
     
     BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
     '~~ Test 1: Including subfolders, several files found
-    Set cll = mFso.FilesSearch(fs_root:="E:\Ablage\Excel VBA\DevAndTest\Common-Components\" _
-                             , fs_mask:="*fr*" _
+    Set cll = mFso.FilesSearch(fs_root:=fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\" _
+                             , fs_mask:="*.bas*" _
                              , fs_stop_after:=5 _
                               )
-    Debug.Assert cll.Count = 2
+    Debug.Assert cll.Count > 2
 
     '~~ Test 2: Not including subfolders, no files found
     Set cll = mFso.FilesSearch(fs_root:="e:\Ablage\Excel VBA\DevAndTest\Common" _
@@ -872,7 +873,11 @@ End Sub
 
 Public Sub Test_13_Folders_Test()
     Const PROC = "Test_13_Folders_Test"
-    Const TEST_FOLDER = "E:\Ablage\Excel VBA\DevAndTest"
+    
+    Dim TestFolder As String
+    Dim fso As New FileSystemObject
+    
+    TestFolder = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path
     
     Dim v       As Variant
     Dim cll     As Collection
@@ -885,7 +890,7 @@ Public Sub Test_13_Folders_Test()
     Debug.Print String(Len(s), "-")
     Debug.Assert cll.Count = 0
     
-    Set cll = Folders(TEST_FOLDER, , sStart)
+    Set cll = Folders(TestFolder, , sStart)
     s = "2. Test: Folders in the provided folder '" & sStart & "' (without sub-folders):"
     Debug.Print vbLf & s
     Debug.Print String(Len(s), "-")
@@ -893,7 +898,7 @@ Public Sub Test_13_Folders_Test()
         Debug.Print v.Path
     Next v
 
-    Set cll = Folders(TEST_FOLDER, True, sStart)
+    Set cll = Folders(TestFolder, True, sStart)
     s = "3. Test: Folders in the provided folder '" & sStart & "' (including sub-folders):"
     Debug.Print vbLf & s
     Debug.Print String(Len(s), "-")
@@ -909,6 +914,7 @@ Public Sub Test_13_Folders_Test()
         Debug.Print v.Path
     Next v
         
+    Set fso = Nothing
 End Sub
 
 Public Sub Test_14_RenameSubFolders()

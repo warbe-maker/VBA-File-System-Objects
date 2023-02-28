@@ -1,4 +1,11 @@
-23-02-25 14:31:13 UpdateOutdatedCommonComponents (by Add-in) for Fso.xlsb: 
-23-02-25 14:31:13 ---------------------------------------------------------
-23-02-25 14:31:13 Standard-Module mCompManClient: 'mCompManClient' (re-)imported from 'D:\Ablage\Excel VBA\DevAndTest\Common-Components\mCompManClient.bas'
-23-02-25 14:31:13                                 VBComponent renewed/updated by (re-)import of the Raw's Export File (D:\Ablage\Excel VBA\DevAndTest\Common-Components\mCompManClient.bas)
+23-02-28 12:31:47 Export Changed Components (by CompMan.xlsb) for Fso.xlsb: 
+23-02-28 12:31:47 ----------------------------------------------------------
+23-02-28 12:31:47 UserForm        fMsg .........: Unchanged Used Common Component
+23-02-28 12:31:47 Standard-Module mCompManClient: Unchanged Used Common Component
+23-02-28 12:31:47 Standard-Module mDct .........: Unchanged Used Common Component
+23-02-28 12:31:48 Standard-Module mErH .........: Unchanged Used Common Component
+23-02-28 12:31:48 Standard-Module mFsoTest .....: Unchanged component
+23-02-28 12:31:48 Standard-Module mMsg .........: Unchanged Used Common Component
+23-02-28 12:31:48 Standard-Module mTrc .........: Unchanged Used Common Component
+23-02-28 12:31:48 Workbook        wbFso ........: Unchanged component
+23-02-28 12:31:48 Worksheet       wsFso ........: Unchanged component
