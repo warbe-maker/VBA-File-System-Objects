@@ -7,7 +7,7 @@ DueModificationWarning=0
 KindOfComponent=used
 RawRevisionNumber=2023-02-24.001
 [mDct]
-DueModificationWarning=0
+DueModificationWarning=1
 KindOfComponent=used
 RawRevisionNumber=2022-12-12.004
 [mErH]
@@ -16,7 +16,7 @@ RawRevisionNumber=2022-05-25.001
 [mFso]
 KindOfComponent=hosted
 RawExpFileFullName=D:\Ablage\Excel VBA\DevAndTest\Common-VBA-File-Sytem-Objects-Services\source\mFso.bas
-RawRevisionNumber=2023-02-27.001
+RawRevisionNumber=2023-03-01.001
 [mMsg]
 DueModificationWarning=0
 KindOfComponent=used

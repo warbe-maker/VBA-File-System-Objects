@@ -1,7 +1,7 @@
 Attribute VB_Name = "mDct"
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module mDct: Procedures for Dictionaries
+' Standard Module mDct: Procedures for Dictionaries xxxx
 '
 ' Note: 1. Procedures of the mDct module do not use the Common VBA Error Handler.
 '          However, test module uses the mErrHndlr module for test purpose.

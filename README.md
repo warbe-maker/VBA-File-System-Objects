@@ -72,7 +72,7 @@ Simplifies the handling of .ini, .cfg, or any other file organized by [section] 
 ## Usage
 ### PrivateProfile services
 The advantages of using the service, specifically when using the below coding scheme:
-- Each value-name/value is a dedicated Get/Let property, the values name is used only internally by the  service thereby preventing any typos<br>
+- Each value-name/value is a dedicated Get/Let property, the values name is used only internally by the service thereby preventing any typos<br>
 Write: `mXxxIni.AnyValue = "xxxxx"`<br>
 Read:   `Dim sValue As String`<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sValue = mXxxIni.AnyValue`
@@ -80,31 +80,27 @@ Write value under a specific section (in case not hidden by the value-name/value
 Write: `mXxxIni.AnyValue("ThisSection") = "xxxxx"`<br>
 Read:   `Dim sValue As String`<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sValue = mXxxIni.AnyValue("ThisSection")`
-- The PrivateProfile file's name is used only with the internal Private _Value_ Get/Let services
-- Sections are (optionally) hidden by providing unique value-names.The following scheme is recommendable. Create a dedicated component (Standard Module) and copy the below code into it.  
-Copy the below code into a new module dedicated to the maintained PrivateProfile file (mXxxIni in this example).
+- The PrivateProfile file's name is used only with the internal Private services, e.g. _Value_ Get/Let
+- Section names are only exposed when appropriate, e.g. when not included in the name/value properties
+- A housekeepingn service ensures that outdated sections are removed (e.g. when a section's name has been changed)
+
+The following recommended scheme provides all the above advantages (when adjusted). Create a dedicated component (Standard Module) for the to-be-maintained ProvateProfile file (mXxxIni in this example) and copy the code below code into it.
 
 ```vb
 Option Explicit
 ' ---------------------------------------------------------------------------
-' Standard Module mIni: Maintains the PrivateProfile file Xxx.ini in 
-' --------------------- ThisWorkbook's parent folder.
-'
-' W. Rauschenberger, Berlin Feb 2023
+' Standard Module mIni: Maintains the PrivateProfile file Xxx.ini in
+'                       ThisWorkbook's parent folder.
 ' ---------------------------------------------------------------------------
-Private Const VNAME_ANY As String = "AnyName"
+Private Const VALUE_NAME_ANY    As String = "AnyName"
+Private Const SECTION_NAME_ANY  As String = "AnySection"
 
-Public Property Get XxxIniFullName() As String
-    XxxIniFullName = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "Xxx.ini")
+Public Property Get AnyValue() As String
+    AnyValue = Value(VALUE_NAME_ANY, SECTION_NAME_ANY)
 End Property
 
-Public Property Get AnyValue(Optional ByVal pp_section As String) As String
-    AnyValue = Value(VNAME_ANY, pp_section)
-End Property
-
-Public Property Let AnyValue(Optional ByVal pp_section As String, _
-                                      ByVal pp_value As String)
-    Value(VNAME_ANY, pp_section) = pp-value
+Public Property Let AnyValue(ByVal pp_value As String)
+    Value(VALUE_NAME_ANY, SECTION_NAME_ANY) = pp_value
 End Property
 
 Private Property Get Value(Optional ByVal pp_value_name As String, _
@@ -115,8 +111,7 @@ Private Property Get Value(Optional ByVal pp_value_name As String, _
 ' ----------------------------------------------------------------------------
     Value = mFso.PPvalue(pp_file:=XxxIniFullName _
                       , pp_section:=pp_section _
-                      , pp_value_name:=pp_value_name _
-                       )
+                      , pp_value_name:=pp_value_name)
 End Property
 
 Private Property Let Value(Optional ByVal pp_value_name As String, _
@@ -124,13 +119,65 @@ Private Property Let Value(Optional ByVal pp_value_name As String, _
                                     ByVal pp_value As Variant)
 ' ----------------------------------------------------------------------------
 ' Writes the value (pp_value) under the name (pp_value_name) into the
-' CompManCfgFileFullName.
+' PrivateProperty file XxxIniFullName.
 ' ----------------------------------------------------------------------------
     mFso.PPvalue(pp_file:=XxxIniFullName _
                , pp_section:=pp_section _
-               , pp_value_name:=pp_value_name _
-                ) = pp_value
+               , pp_value_name:=pp_value_name) = pp_value
 End Property
+
+Public Property Get XxxIniFullName() As String
+    XxxIniFullName = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "Xxx.ini")
+End Property
+
+Public Sub Hskpng()
+' ------------------------------------------------------------------------------
+' Removes obsolete sections, e. g. those with an unknown Name.
+' ------------------------------------------------------------------------------
+    HskpngRemoveObsoleteSections
+  ' HskpngRemoveObsoleteNames (if applicable)
+  ' HskpngAddMissingSections (if applicable)
+End Sub
+
+Private Sub HskpngRemoveObsoleteSections()
+' ------------------------------------------------------------------------------
+' Remove sections with an unknown name
+' ------------------------------------------------------------------------------
+    Dim v As Variant
+    
+    For Each v In Sections
+        If HskpngSectionIsInvalid(v) Then
+            RemoveSection v
+        End If
+    Next v
+    
+End Sub
+
+Private Function HskpngSectionIsInvalid(ByVal h_section As String) As Boolean
+' ------------------------------------------------------------------------------
+' Returns TRUE when the section (h_section) is invalid, which is the case when
+' it is not valid section's Name.
+' ------------------------------------------------------------------------------
+    Select Case True
+        Case h_section = SECTION_NAME_ANY
+        Case Else
+            HskpngSectionIsInvalid = True
+    End Select
+End Function
+
+Private Sub RemoveSection(ByVal r_section_name As String)
+    mFso.PPremoveSections pp_file:=XxxIniFullName, pp_sections:=r_section_name
+End Sub
+
+Public Sub Reorg()
+    mFso.PPreorg XxxIniFullName
+End Sub
+
+Private Function Sections() As Dictionary
+    Set Sections = mFso.PPsectionNames(XxxIniFullName)
+End Function
+
+
 ```
 ### Other services
 #### Exists
