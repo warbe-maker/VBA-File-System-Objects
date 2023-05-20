@@ -25,7 +25,7 @@ Common services regarding files system objects (files and folders).  The module 
 |                         | Let: Writes a text string, optionally intermitted by vbCrLf, to a file - optionally appended. |
 
 #### _Exists_ service
-A kind of a universal existence check service with the following syntax:<br>`mFso.Exists([folder], [file], [section], [value-name], [result_folder], [result_files]`)<br>
+A kind of a universal existence check service with the following syntax:<br>`mFso.Exists([ex_folder], [ex_file], [ex_section], [ex_value-name], [ex_result_folder], [ex_result_files]`)<br>
 The service has the following named arguments:
 
 | Service              | Description                                |
