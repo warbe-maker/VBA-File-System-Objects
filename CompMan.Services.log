@@ -1,31 +1,16 @@
-23-06-22-14:49:39  Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb 
-23-06-22-14:49:39 ----------------------------------------------------------------
-23-06-22-14:49:39  UserForm        fMsg ...........: Used Common Component
-23-06-22-14:49:39  Standard-Module mBasic .........: Used Common Component
-23-06-22-14:49:39  Standard-Module mCompManClient .: Used Common Component
-23-06-22-14:49:39  Standard-Module mDct ...........: Used Common Component
-23-06-22-14:49:39  Standard-Module mErH ...........: Used Common Component
-23-06-22-14:49:39  Standard-Module mMsg ...........: Used Common Component
-23-06-22-14:49:39  Standard-Module mTrc ...........: Used Common Component
-23-06-22-14:49:42  UserForm        fMsg ...........: Used Common Component is up-to-date
-23-06-22-14:49:42  Standard-Module mBasic .........: Used Common Component is up-to-date
-23-06-22-14:49:42  Standard-Module mCompManClient .: Used Common Component is up-to-date
-23-06-22-14:49:42  Standard-Module mDct ...........: Used Common Component is up-to-date
-23-06-22-14:49:42  Standard-Module mMsg ...........: Used Common Component is up-to-date
-23-06-22-14:49:42  Standard-Module mTrc ...........: Used Common Component is up-to-date
-23-06-22-14:49:44  Standard-Module mErH ...........: Outdated used Common Component updated by re-import of D:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas
-23-06-22-14:56:04 ==================================================================
-23-06-22-14:56:04      Export Changed Components (by CompMan.xlsb) for Fso.xlsb     
-23-06-22-14:56:04 ------------------------------------------------------------------
-23-06-22-14:56:04  UserForm        fMsg ...........: Unchanged used Common Component
-23-06-22-14:56:04  Standard-Module mBasic .........: Unchanged used Common Component
-23-06-22-14:56:04  Standard-Module mCompManClient .: Unchanged used Common Component
-23-06-22-14:56:04  Standard-Module mDct ...........: Unchanged used Common Component
-23-06-22-14:56:04  Standard-Module mErH ...........: Modified used Common Component!!!!! (because this is not the hosting Workbook a "due revert allert" has been registered!)
-23-06-22-14:56:04                                    Modified used Common Component e x p o r t e d !
-23-06-22-14:56:04  Standard-Module mFso ...........: Unchanged hosted raw Common Component
-23-06-22-14:56:04  Standard-Module mFsoTest .......: Unchanged VBComponent
-23-06-22-14:56:04  Standard-Module mMsg ...........: Unchanged used Common Component
-23-06-22-14:56:04  Standard-Module mTrc ...........: Unchanged used Common Component
-23-06-22-14:56:04  Workbook        wbFso ..........: Unchanged VBComponent
-23-06-22-14:56:04  Worksheet       wsFso ..........: Unchanged VBComponent
+23-06-22-14:58:01  Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb 
+23-06-22-14:58:01 ----------------------------------------------------------------
+23-06-22-14:58:01  UserForm        fMsg ...........: Used Common Component
+23-06-22-14:58:01  Standard-Module mBasic .........: Used Common Component
+23-06-22-14:58:01  Standard-Module mCompManClient .: Used Common Component
+23-06-22-14:58:01  Standard-Module mDct ...........: Used Common Component
+23-06-22-14:58:01  Standard-Module mErH ...........: Used Common Component
+23-06-22-14:58:01  Standard-Module mMsg ...........: Used Common Component
+23-06-22-14:58:01  Standard-Module mTrc ...........: Used Common Component
+23-06-22-14:58:04  UserForm        fMsg ...........: Used Common Component is up-to-date
+23-06-22-14:58:04  Standard-Module mBasic .........: Used Common Component is up-to-date
+23-06-22-14:58:04  Standard-Module mCompManClient .: Used Common Component is up-to-date
+23-06-22-14:58:04  Standard-Module mDct ...........: Used Common Component is up-to-date
+23-06-22-14:58:04  Standard-Module mErH ...........: Used Common Component is up-to-date
+23-06-22-14:58:04  Standard-Module mMsg ...........: Used Common Component is up-to-date
+23-06-22-14:58:04  Standard-Module mTrc ...........: Used Common Component is up-to-date
