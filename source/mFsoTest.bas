@@ -41,173 +41,6 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
-Private Sub BoC(ByVal boc_id As String, ParamArray b_arguments() As Variant)
-' ------------------------------------------------------------------------------
-' (B)egin-(o)f-(C)ode with id (boc_id) trace. Procedure to be copied as Private
-' into any module potentially using the Common VBA Execution Trace Service. Has
-' no effect when Conditional Compile Argument is 0 or not set at all.
-' Note: The begin id (boc_id) has to be identical with the paired EoC statement.
-' ------------------------------------------------------------------------------
-    Dim s As String: If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
-#If ExecTrace = 1 Then
-    mTrc.BoC boc_id, s
-#End If
-End Sub
-
-Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
-' ------------------------------------------------------------------------------
-' (B)egin-(o)f-(P)rocedure named (b_proc). Procedure to be copied as Private
-' into any module potentially either using the Common VBA Error Service and/or
-' the Common VBA Execution Trace Service. Has no effect when Conditional Compile
-' Arguments are 0 or not set at all.
-' ------------------------------------------------------------------------------
-    Dim s As String: If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
-#If ErHComp = 1 Then
-    mErH.BoP b_proc, s
-#ElseIf ExecTrace = 1 Then
-    mTrc.BoP b_proc, s
-#End If
-End Sub
-
-Private Sub EoC(ByVal eoc_id As String, ParamArray b_arguments() As Variant)
-' ------------------------------------------------------------------------------
-' (E)nd-(o)f-(C)ode id (eoc_id) trace. Procedure to be copied as Private into
-' any module potentially using the Common VBA Execution Trace Service. Has no
-' effect when the Conditional Compile Argument is 0 or not set at all.
-' Note: The end id (eoc_id) has to be identical with the paired BoC statement.
-' ------------------------------------------------------------------------------
-    Dim s As String: If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
-#If ExecTrace = 1 Then
-    mTrc.BoC eoc_id, s
-#End If
-End Sub
-
-Private Sub EoP(ByVal e_proc As String, _
-       Optional ByVal e_inf As String = vbNullString)
-' ------------------------------------------------------------------------------
-' (E)nd-(o)f-(P)rocedure named (e_proc). Procedure to be copied as Private Sub
-' into any module potentially either using the Common VBA Error Service and/or
-' the Common VBA Execution Trace Service. Has no effect when Conditional Compile
-' Arguments are 0 or not set at all.
-' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
-    mErH.EoP e_proc
-#ElseIf ExecTrace = 1 Then
-    mTrc.EoP e_proc, e_inf
-#End If
-End Sub
-
-Public Function ErrMsg(ByVal err_source As String, _
-              Optional ByVal err_no As Long = 0, _
-              Optional ByVal err_dscrptn As String = vbNullString, _
-              Optional ByVal err_line As Long = 0) As Variant
-' ------------------------------------------------------------------------------
-' Universal error message display service. Displays a debugging option button
-' when the Conditional Compile Argument 'Debugging = 1' and an optional
-' additional "About the error:" section when information is concatenated with
-' the error message by two vertical bars (||).
-'
-' May be copied as Private Function into any module. Considers the Common VBA
-' Message Service and the Common VBA Error Services as optional components.
-' When neither is installed the error message is displayed by the VBA.MsgBox.
-'
-' Usage: Example with the Conditional Compile Argument 'Debugging = 1'
-'
-'        Private/Public <procedure-name>
-'            Const PROC = "<procedure-name>"
-'
-'            On Error Goto eh
-'            ....
-'        xt: Exit Sub/Function/Property
-'
-'        eh: Select Case ErrMsg(ErrSrc(PROC))
-'               Case vbResume:  Stop: Resume
-'               Case Else:      GoTo xt
-'            End Select
-'        End Sub/Function/Property
-'
-' Note:  The above may seem to be a lot of code but will be a godsend in case
-'        of an error!
-'
-' Uses:
-' - AppErr For programmed application errors (Err.Raise AppErr(n), ....) to
-'          turn tem into negative and in the error mesaage back into a positive
-'          number.
-' - ErrSrc To provide an unambigous procedure name - prefixed by the module name
-'
-' W. Rauschenberger Berlin, Nov 2021
-'
-' See:
-' https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
-' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
-    '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
-    '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
-    ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
-#ElseIf MsgComp = 1 Then
-    '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
-    '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
-    ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
-#End If
-    '~~ When neither of the Common Component is available in the VB-Project
-    '~~ the error message is displayed by means of the VBA.MsgBox
-    Dim ErrBttns    As Variant
-    Dim ErrAtLine   As String
-    Dim ErrDesc     As String
-    Dim ErrLine     As Long
-    Dim ErrNo       As Long
-    Dim ErrSrc      As String
-    Dim ErrText     As String
-    Dim ErrTitle    As String
-    Dim ErrType     As String
-    Dim ErrAbout    As String
-        
-    '~~ Obtain error information from the Err object for any argument not provided
-    If err_no = 0 Then err_no = Err.Number
-    If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.Source
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
-    If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
-    
-    '~~ Consider extra information is provided with the error description
-    If InStr(err_dscrptn, "||") <> 0 Then
-        ErrDesc = Split(err_dscrptn, "||")(0)
-        ErrAbout = Split(err_dscrptn, "||")(1)
-    Else
-        ErrDesc = err_dscrptn
-    End If
-    
-    '~~ Determine the type of error
-    Select Case err_no
-        Case Is < 0
-            ErrNo = AppErr(err_no)
-            ErrType = "Application Error "
-        Case Else
-            ErrNo = err_no
-            If err_dscrptn Like "*DAO*" _
-            Or err_dscrptn Like "*ODBC*" _
-            Or err_dscrptn Like "*Oracle*" _
-            Then ErrType = "Database Error " _
-            Else ErrType = "VB Runtime Error "
-    End Select
-    
-    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"   ' assemble ErrSrc from available information"
-    If err_line <> 0 Then ErrAtLine = " at line " & err_line                    ' assemble ErrAtLine from available information
-    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
-       
-    ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
-    If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
-    
-#If Debugging Then
-    ErrBttns = vbYesNo
-    ErrText = ErrText & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
-#Else
-    ErrBttns = vbCritical
-#End If
-    ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
-xt:
-End Function
-
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mFsoTest." & sProc
 End Function
@@ -227,7 +60,7 @@ Private Function TestProc_PrivateProfile_File(ByVal ts_sections As Long, _
     Dim j       As Long
     Dim sFile   As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sFile = mFso.FileTemp(tmp_extension:=".dat")
     For i = ts_sections To 1 Step -1
         For j = ts_values To 1 Step -1
@@ -241,10 +74,10 @@ Private Function TestProc_PrivateProfile_File(ByVal ts_sections As Long, _
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     cllTestFiles.Add sFile
     
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Function
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -267,21 +100,20 @@ Private Function TestProc_TempFile() As String
     On Error GoTo eh
     Dim sFile   As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sFile = mFso.FileTemp(tmp_extension:=".dat")
     TestProc_TempFile = sFile
     
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     cllTestFiles.Add sFile
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Function
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
-
 End Function
 
 Public Sub Test_00_Regression()
@@ -296,27 +128,26 @@ Public Sub Test_00_Regression()
     On Error GoTo eh
     Dim sTestStatus As String
     
-    '~~ Initialization of a new Trace Log File for this Regression test
-    '~~ ! must be done prior the first BoP !
-    mTrc.LogFile = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "Regression Test.log")
-    mTrc.LogTitle = "Regression Test module mFso"
-        
+    '~~ Initialization (must be done prior the first BoP!)
+    mTrc.FileName = "RegressionTest.ExecTrace.log"
+    mTrc.Title = "Regression Test module mFso"
+    mTrc.NewFile
     mErH.Regression = True
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sTestStatus = "mFso Regression Test: "
 
     mErH.Asserted AppErr(1) ' For the very last test on an error condition
     mFsoTest.Test_00_Regression_Common_Services
     mFsoTest.Test_00_Regression_PrivateProfile_Services
-    
+
 xt: TestProc_RemoveTestFiles
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     mErH.Regression = False
     mTrc.Dsply
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -334,24 +165,26 @@ Public Sub Test_00_Regression_Common_Services()
     Dim sTestStatus As String
     
     sTestStatus = "mFso Regression-Other: "
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     mErH.Asserted AppErr(1) ' For the very last test on an error condition
     mFsoTest.Test_01_File_Temp
     mFsoTest.Test_02_File_Exists
+    mFsoTest.Test_03_FilePathSplit
     mFsoTest.Test_07_File_Picked
     mFsoTest.Test_08_File_Txt_Let_Get
+    mFsoTest.Test_09_File_Differs_False
     mFsoTest.Test_09_File_Differs
     mFsoTest.Test_10_File_Arry_Get_Let
     mFsoTest.Test_11_File_Search
     mFsoTest.Test_12_IsValid_FileFolder_Name
     mFsoTest.Test_13_Folders_Test
     mFsoTest.Test_14_RenameSubFolders
-    
-xt: EoP ErrSrc(PROC)
+
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -368,7 +201,7 @@ Public Sub Test_00_Regression_PrivateProfile_Services()
     On Error GoTo eh
     Dim sTestStatus As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sTestStatus = "mFso Test_00_Regression_PrivateProfile_Services: "
     mErH.Asserted AppErr(1) ' For the very last test on an error condition
     
@@ -382,10 +215,10 @@ Public Sub Test_00_Regression_PrivateProfile_Services()
     mFsoTest.Test_99_PrivateProfile_PPreorg_WithNoFileProvided
 
 xt: TestProc_RemoveTestFiles
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -399,10 +232,10 @@ Public Sub Test_01_File_Temp()
 
     Dim sTemp As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sTemp = mFso.FileTemp(tmp_path:=ThisWorkbook.Path)
     sTemp = mFso.FileTemp()
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     
 End Sub
 
@@ -417,7 +250,7 @@ Public Sub Test_02_File_Exists()
     Dim fso     As New FileSystemObject
     Dim sFile   As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     '~~ Folder exists
     Debug.Assert mFso.Exists(ex_folder:=ThisWorkbook.Path & "x") = False
@@ -462,10 +295,10 @@ Public Sub Test_02_File_Exists()
     Debug.Assert cll(2).Name = "fMsg.frx"
                         
 xt: TestProc_RemoveTestFiles
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -481,7 +314,7 @@ Public Sub Test_03_FilePathSplit()
     Dim p   As String   ' folder path
     Dim f   As String   ' file
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     p = ThisWorkbook.FullName
     mFso.FilePathSplit p, f
     Debug.Assert p = ThisWorkbook.Path & "\"
@@ -491,7 +324,7 @@ Public Sub Test_03_FilePathSplit()
     mFso.FilePathSplit p, f
     Debug.Assert p = vbNullString
     Debug.Assert f = ThisWorkbook.Name
-
+    
     p = ThisWorkbook.Path
     mFso.FilePathSplit p, f
     Debug.Assert p = ThisWorkbook.Path
@@ -500,17 +333,17 @@ Public Sub Test_03_FilePathSplit()
     p = ThisWorkbook.FullName & "x"
     mFso.FilePathSplit p, f
     Debug.Assert p = vbNullString
-    Debug.Assert f = ThisWorkbook.FullName & "x" ' any last element with a . is interpreted as file name
+    Debug.Assert f = vbNullString ' any last element with a . is interpreted as file name
     
     p = ThisWorkbook.Path & "x"
     mFso.FilePathSplit p, f
-    Debug.Assert p = ThisWorkbook.Path & "x"
+    Debug.Assert p = vbNullString
     Debug.Assert f = vbNullString
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -525,7 +358,7 @@ Public Sub Test_07_File_Picked()
     On Error GoTo eh
     Dim fl As File
 
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
     '~~ Test 1: A file is picked
@@ -547,10 +380,10 @@ Public Sub Test_07_File_Picked()
                                     )
     Debug.Assert fl Is Nothing
     
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -571,7 +404,7 @@ Public Sub Test_08_File_Txt_Let_Get()
     Dim oFl     As File
     
     Test_Status = ErrSrc(PROC)
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     '~~ Test 1: Write one recod
     sFl = mFso.FileTemp()
@@ -615,10 +448,10 @@ Public Sub Test_08_File_Txt_Let_Get()
     fso.DeleteFile sFl
 
 xt: Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -638,13 +471,13 @@ Public Sub Test_09_File_Differs()
     Dim sF1     As String
     Dim sF2     As String
 
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
     sF1 = mFso.FileTemp
     sF2 = mFso.FileTemp
 
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     ' Prepare
     mFso.FileTxt(ft_file:=sF1, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
     mFso.FileTxt(ft_file:=sF2, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
@@ -698,18 +531,17 @@ Public Sub Test_09_File_Differs()
                                )
     Debug.Assert dctDiff.Count = 1
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     If fso.FileExists(sF1) Then fso.DeleteFile (sF1)
     If fso.FileExists(sF2) Then fso.DeleteFile (sF2)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
 End Sub
 
-  
 Public Sub Test_09_File_Differs_False()
 ' ----------------------------------------------------------------------------
 '
@@ -728,16 +560,16 @@ Public Sub Test_09_File_Differs_False()
     sFile = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\mFso.bas"
     Set f1 = fso.GetFile(sFile)
     Set f2 = fso.GetFile(sFile)
-    BoP ErrSrc(PROC), "fd_file1 = ", f1.Name, "fd_file2 = ", f2.Name
+    mBasic.BoP ErrSrc(PROC), "fd_file1 = " & f1.Name & ", fd_file2 = " & f2.Name
     
     ' Test
     Set dctDiff = mFso.FileDiffers(fd_file1:=f1, fd_file2:=f2, fd_ignore_empty_records:=True)
     Debug.Assert dctDiff.Count = 0
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -761,7 +593,7 @@ Public Sub Test_10_File_Arry_Get_Let()
     Dim a           As Variant
     Dim v           As Variant
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
     sFile1 = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
@@ -805,10 +637,10 @@ xt: With fso
         If .FileExists(sFile2) Then .DeleteFile sFile2
     End With
     Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -824,7 +656,7 @@ Public Sub Test_11_File_Search()
     Dim cll As Collection
     Dim fso As New FileSystemObject
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
     '~~ Test 1: Including subfolders, several files found
@@ -842,10 +674,10 @@ Public Sub Test_11_File_Search()
                               )
     Debug.Assert cll.Count = 0
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -857,7 +689,7 @@ Public Sub Test_12_IsValid_FileFolder_Name()
 ' ----------------------------------------------------------------------------
     Const PROC = "Test_12_IsValid_FileFolder_Name"
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     '~~ Test 1: Valid Folder Name
     Debug.Assert mFso.FolderIsValidName(ThisWorkbook.Path) = True        ' a valid folder is a valid file name as well
     Debug.Assert mFso.FolderIsValidName(ThisWorkbook.FullName) = True
@@ -867,7 +699,7 @@ Public Sub Test_12_IsValid_FileFolder_Name()
     '~~ Test 2: Valid File Name
     Debug.Assert mFso.FileIsValidName(ThisWorkbook.Name) = True
     Debug.Assert mFso.FileIsValidName(ThisWorkbook.Name & "?") = False
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     
 End Sub
 
@@ -922,7 +754,7 @@ Public Sub Test_14_RenameSubFolders()
     
     Dim cllRenamed  As Collection
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     mFso.RenameSubFolders ThisWorkbook.Path & "\Test", "Sub_2_2", "Sub_2_2_renamed", cllRenamed
     Debug.Assert cllRenamed.Count = 1
     Debug.Assert cllRenamed(1).Path = ThisWorkbook.Path & "\Test\Sub_2\Sub_2_2_renamed"
@@ -930,7 +762,7 @@ Public Sub Test_14_RenameSubFolders()
     mFso.RenameSubFolders ThisWorkbook.Path & "\Test", "Sub_2_2_renamed", "Sub_2_2", cllRenamed
     Debug.Assert cllRenamed.Count = 1
     Debug.Assert cllRenamed(1).Path = ThisWorkbook.Path & "\Test\Sub_2\Sub_2_2"
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
 
 End Sub
 
@@ -945,7 +777,7 @@ Public Sub Test_91_PrivateProfile_SectionsNames()
     Dim fso     As New FileSystemObject
     Dim dct     As Dictionary
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=3, ts_values:=3)
     
     Set dct = mFso.PPsectionNames(sFile)
@@ -954,13 +786,13 @@ Public Sub Test_91_PrivateProfile_SectionsNames()
     Debug.Assert dct.Items()(1) = TestProc_SectionName(2)
     Debug.Assert dct.Items()(2) = TestProc_SectionName(3)
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     TestProc_RemoveTestFiles
     Set fso = Nothing
     Set dct = Nothing
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -977,11 +809,11 @@ Public Sub Test_92_PrivateProfile_ValueNames()
     Dim dct     As Dictionary
     Dim fso     As New FileSystemObject
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=5, ts_values:=3)
     
     Set dct = mFso.PPvalues(pp_file:=sFile, pp_section:=TestProc_SectionName(2))
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Debug.Assert dct.Count = 3
     Debug.Assert dct.Keys()(0) = TestProc_ValueName(2, 1)
     Debug.Assert dct.Keys()(1) = TestProc_ValueName(2, 2)
@@ -991,7 +823,7 @@ xt: TestProc_RemoveTestFiles
     Set fso = Nothing
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -1009,7 +841,7 @@ Public Sub Test_93_PrivateProfile_Value()
     Dim cyValue     As Currency: cyValue = 12345.6789
     Dim cyResult    As Currency
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
     sFile = TestProc_TempFile
             
@@ -1035,10 +867,10 @@ Public Sub Test_93_PrivateProfile_Value()
     
 xt: TestProc_RemoveTestFiles
     Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -1055,7 +887,7 @@ Public Sub Test_94_PrivateProfile_Values()
     Dim sFile       As String
     Dim fso         As New FileSystemObject
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=3 _
                                , ts_values:=3 _
                                 )
@@ -1082,10 +914,10 @@ Public Sub Test_94_PrivateProfile_Values()
 xt: TestProc_RemoveTestFiles
     Set dct = Nothing
     Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -1100,7 +932,7 @@ Public Sub Test_96_PrivateProfile_Entry_Exists()
     On Error GoTo eh
     Dim sFile   As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
     sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=3)
        
@@ -1124,10 +956,10 @@ Public Sub Test_96_PrivateProfile_Entry_Exists()
                                  ) = False
     
 xt: TestProc_RemoveTestFiles
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -1149,7 +981,7 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     Dim sSectionName    As String
     Dim dct             As Dictionary
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     '~~ Test 1a ------------------------------------
     '~~ Copy a specific section to a new target file
@@ -1191,10 +1023,10 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
             
 xt: TestProc_RemoveTestFiles
     Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -1210,7 +1042,7 @@ Public Sub Test_98_PrivateProfile_PPreorg()
     Dim sFile   As String
     Dim vFile   As Variant
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
     vFile = mFso.FileArry(sFile)
@@ -1225,10 +1057,10 @@ Public Sub Test_98_PrivateProfile_PPreorg()
     
             
 xt: TestProc_RemoveTestFiles
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -1244,7 +1076,7 @@ Public Sub Test_99_PrivateProfile_PPreorg_WithNoFileProvided()
     Dim sFile   As String
     Dim vFile   As Variant
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
     
     mFso.PPreorg sFile
@@ -1254,10 +1086,10 @@ Public Sub Test_99_PrivateProfile_PPreorg_WithNoFileProvided()
     Debug.Assert vFile(1) = TestProc_ValueName(1, 1) & "=" & TestProc_ValueString(1, 1)
               
 xt: TestProc_RemoveTestFiles
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select

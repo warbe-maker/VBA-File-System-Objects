@@ -1,0 +1,35 @@
+23-06-22 12:49:36 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 12:49:36                 >> Begin execution trace 
+23-06-22 12:49:36 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 12:59:33 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 12:59:33                 >> Begin execution trace 
+23-06-22 12:59:33 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 13:00:23 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 13:00:23                 >> Begin execution trace 
+23-06-22 13:00:23 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 13:01:03 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 13:01:03                 >> Begin execution trace 
+23-06-22 13:01:03 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 13:10:32 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 13:10:32                 >> Begin execution trace 
+23-06-22 13:10:32 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 13:17:23 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 13:17:23                 >> Begin execution trace 
+23-06-22 13:17:23 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 13:18:00 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 13:18:00                 >> Begin execution trace 
+23-06-22 13:18:00 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+
+23-06-22 13:19:04 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 13:19:04                 >> Begin execution trace 
+23-06-22 13:19:04 00,0000         |  >> mFsoTest.Test_03_FilePathSplit
+23-06-22 13:19:07 03,5584 03,5584 |  << mFsoTest.Test_03_FilePathSplit
+23-06-22 13:19:07 03,5584 03,5584 << End execution trace 
+23-06-22 13:19:07                 Impact on the overall performance (caused by the trace itself): 1,3 milliseconds!
+23-06-22 13:19:07 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
