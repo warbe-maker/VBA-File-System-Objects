@@ -3,8 +3,7 @@ Option Explicit
 ' ----------------------------------------------------------------------------
 ' Standard Module mBasic: Declarations, procedures, methods and function
 ' ======================= likely to be required in any VB-Project, optionally
-' just being copied.
-'
+'                         just being copied.
 ' Note: All services run completely autonomous, i.e. do not require any other
 '       installed module. However, when the Common VBA Message Services
 '       (fMsg/mMsg) and or the Common VBA Error Services (mErH) are installed
@@ -50,13 +49,11 @@ Option Explicit
 ' ErrSrc            Unambigous identification of a procedure - used with
 '                   BoP, EoP, and ErrMsg
 '
-' Requires Reference to:
-' Microsoft Scripting Runtime
-' Microsoft Visual Basic Application Extensibility .."
+' Requires:
+' ---------
+' Reference to "Microsoft Scripting Runtime"
+' Reference to "Microsoft Visual Basic Application Extensibility .."
 '
-' May use:             fMsg, mMsg, mErH (via ErrMsg)
-'
-' ----------------------------------------------------------------------------
 ' 1) Provides a comprehensive and well designed display of an error message,
 '    provided Common VBA Error Services (mErH) and the Common VBA Message
 '    Service (fMsg/mMsg) is installed and the Conditional Compile Arguments
@@ -70,8 +67,8 @@ Option Explicit
 '    be copied into any component to use the mErH and the mTrc/clsTrc module.
 ' 3) To be copied as Private procedure into any component which raises
 '    Application Errors by means of Err.Raise.
-' 4) https://github.com/warbe-maker/Common-VBA-Error-Services
-' 5) https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service
+' 4) https://github.com/warbe-maker/VBA-Error
+' 5) https://github.com/warbe-maker/VBA-Trace
 '
 ' W. Rauschenberger, Berlin Feb. 2022
 ' See https://github.com/warbe-maker/VBA-Basics (displayed with README proc)
@@ -89,6 +86,7 @@ Public Const DSPACE     As String = " "
 Public Const DEXCL      As String = "!"
 Public Const DQUOTE     As String = """"    ' one " character
 
+Private Const GITHUB_REPO_URL = "https://github.com/warbe-maker/VBA-Basics"
 ' Common xl constants grouped ----------------------------
 Public Enum YesNo   ' ------------------------------------
     xlYes = 1       ' System constants (identical values)
@@ -698,7 +696,7 @@ Public Sub EoP(ByVal e_proc As String, _
 #If ErHComp = 1 Then          ' serves the mTrc/clsTrc when installed and active
     mErH.EoP e_proc, e_args
 #ElseIf XcTrc_clsTrc = 1 Then ' when only clsTrc is installed and active
-    Trc.RoP e_proc, e_args
+    Trc.EoP e_proc, e_args
 #ElseIf XcTrc_mTrc = 1 Then   ' when only mTrc is installed and activate
     mTrc.EoP e_proc, e_args
 #End If
@@ -912,11 +910,13 @@ Public Function ProgramIsInstalled(ByVal sProgram As String) As Boolean
 End Function
 
 Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
-    Const BASE_URL = "https://github.com/warbe-maker/VBA-Basics/blob/master/README.md"
     
-    If r_bookmark = vbNullString _
-    Then ShellRun BASE_URL _
-    Else ShellRun BASE_URL & "#" & r_bookmark
+    If r_bookmark = vbNullString Then
+        mBasic.ShellRun GITHUB_REPO_URL
+    Else
+        r_bookmark = Replace("#" & r_bookmark, "##", "#") ' add # if missing
+        mBasic.ShellRun GITHUB_REPO_URL & r_bookmark
+    End If
         
 End Sub
 

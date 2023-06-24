@@ -61,7 +61,7 @@ Private Function TestProc_PrivateProfile_File(ByVal ts_sections As Long, _
     Dim sFile   As String
     
     mBasic.BoP ErrSrc(PROC)
-    sFile = mFso.FileTemp(tmp_extension:=".dat")
+    sFile = mFso.FileTemp(f_extension:=".dat")
     For i = ts_sections To 1 Step -1
         For j = ts_values To 1 Step -1
             mFso.PPvalue(pp_file:=sFile _
@@ -85,7 +85,7 @@ End Function
 
 Private Sub TestProc_RemoveTestFiles()
     
-    If mFso.Exists(ex_folder:=ThisWorkbook.Path, ex_file:="rad*.dat") Then
+    If mFso.Exists(x_folder:=ThisWorkbook.Path, x_file:="rad*.dat") Then
         Kill ThisWorkbook.Path & "\rad*.dat"
     End If
     
@@ -101,7 +101,7 @@ Private Function TestProc_TempFile() As String
     Dim sFile   As String
     
     mBasic.BoP ErrSrc(PROC)
-    sFile = mFso.FileTemp(tmp_extension:=".dat")
+    sFile = mFso.FileTemp(f_extension:=".dat")
     TestProc_TempFile = sFile
     
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
@@ -233,7 +233,7 @@ Public Sub Test_01_File_Temp()
     Dim sTemp As String
     
     mBasic.BoP ErrSrc(PROC)
-    sTemp = mFso.FileTemp(tmp_path:=ThisWorkbook.Path)
+    sTemp = mFso.FileTemp(f_path:=ThisWorkbook.Path)
     sTemp = mFso.FileTemp()
     mBasic.EoP ErrSrc(PROC)
     
@@ -253,43 +253,42 @@ Public Sub Test_02_File_Exists()
     mBasic.BoP ErrSrc(PROC)
     
     '~~ Folder exists
-    Debug.Assert mFso.Exists(ex_folder:=ThisWorkbook.Path & "x") = False
-    Debug.Assert mFso.Exists(ex_folder:=ThisWorkbook.Path) = True
+    Debug.Assert mFso.Exists(x_folder:=ThisWorkbook.Path & "x") = False
+    Debug.Assert mFso.Exists(x_folder:=ThisWorkbook.Path) = True
     
     '~~ File exists
-    Debug.Assert mFso.Exists(ex_file:=ThisWorkbook.FullName & "x") = False
-    Debug.Assert mFso.Exists(ex_file:=ThisWorkbook.FullName) = True
+    Debug.Assert mFso.Exists(x_file:=ThisWorkbook.FullName & "x") = False
+    Debug.Assert mFso.Exists(x_file:=ThisWorkbook.FullName) = True
 
     '~~ Section exists
     sFile = TestProc_PrivateProfile_File(ts_sections:=3, ts_values:=3)
-    Debug.Assert mFso.Exists(ex_file:=sFile _
-                            , ex_section:=TestProc_SectionName(2) & "x" _
-                             ) = False
-    Debug.Assert mFso.Exists(ex_file:=sFile _
-                            , ex_section:=TestProc_SectionName(2) _
-                             ) = True
-    
+    Debug.Assert mFso.Exists(x_file:=sFile _
+                           , x_section:=TestProc_SectionName(2) & "x" _
+                            ) = False
+    Debug.Assert mFso.Exists(x_file:=sFile _
+                           , x_section:=TestProc_SectionName(2) _
+                            ) = True
     '~~ Value-Name exists
-    Debug.Assert mFso.Exists(ex_file:=sFile _
-                            , ex_section:=TestProc_SectionName(2) _
-                            , ex_value_name:=TestProc_ValueName(2, 2) & "x" _
+    Debug.Assert mFso.Exists(x_file:=sFile _
+                            , x_section:=TestProc_SectionName(2) _
+                            , x_value_name:=TestProc_ValueName(2, 2) & "x" _
                              ) = False
-    Debug.Assert mFso.Exists(ex_file:=sFile _
-                            , ex_section:=TestProc_SectionName(2) _
-                            , ex_value_name:=TestProc_ValueName(2, 2) _
+    Debug.Assert mFso.Exists(x_file:=sFile _
+                            , x_section:=TestProc_SectionName(2) _
+                            , x_value_name:=TestProc_ValueName(2, 2) _
                              ) = True
 
     '~~ File by wildcard, in any sub-folder, exactly one
-    Debug.Assert mFso.Exists(ex_folder:=ThisWorkbook.Path _
-                            , ex_file:="*.xl*" _
-                            , ex_result_files:=cll) = True
+    Debug.Assert mFso.Exists(x_folder:=ThisWorkbook.Path _
+                            , x_file:="*.xl*" _
+                            , x_result_files:=cll) = True
     Debug.Assert cll.Count = 1
     Debug.Assert cll(1).Path = ThisWorkbook.FullName
             
     '~~ File by wildcard, in any sub-folder, more than one
-    Debug.Assert mFso.Exists(ex_folder:=ThisWorkbook.Path _
-                            , ex_file:="fMsg.fr*" _
-                            , ex_result_files:=cll) = True
+    Debug.Assert mFso.Exists(x_folder:=ThisWorkbook.Path _
+                            , x_file:="fMsg.fr*" _
+                            , x_result_files:=cll) = True
     Debug.Assert cll.Count = 2
     Debug.Assert cll(1).Name = "fMsg.frm"
     Debug.Assert cll(2).Name = "fMsg.frx"
@@ -409,26 +408,26 @@ Public Sub Test_08_File_Txt_Let_Get()
     '~~ Test 1: Write one recod
     sFl = mFso.FileTemp()
     sTest = "My string"
-    mFso.FileTxt(ft_file:=sFl _
-            , ft_append:=False _
-             ) = sTest
-    sResult = mFso.FileTxt(ft_file:=sFl, ft_split:=sSplit)
+    mFso.FileTxt(f_file:=sFl _
+               , f_append:=False _
+                ) = sTest
+    sResult = mFso.FileTxt(f_file:=sFl, f_split:=sSplit)
     Debug.Assert Split(sResult, sSplit)(0) = sTest
     fso.DeleteFile sFl
     
     '~~ Test 2: Empty file
     sFl = mFso.FileTemp()
     sTest = vbNullString
-    mFso.FileTxt(ft_file:=sFl, ft_append:=False) = sTest
-    sResult = mFso.FileTxt(ft_file:=sFl, ft_split:=sSplit)
+    mFso.FileTxt(f_file:=sFl, f_append:=False) = sTest
+    sResult = mFso.FileTxt(f_file:=sFl, f_split:=sSplit)
     Debug.Assert sResult = vbNullString
     fso.DeleteFile sFl
 
     '~~ Test 3: Append
     sFl = mFso.FileTemp()
-    mFso.FileTxt(ft_file:=sFl, ft_append:=False) = "AAA" & vbCrLf & "BBB"
-    mFso.FileTxt(ft_file:=sFl, ft_append:=True) = "CCC"
-    sResult = mFso.FileTxt(ft_file:=sFl, ft_split:=sSplit)
+    mFso.FileTxt(f_file:=sFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
+    mFso.FileTxt(f_file:=sFl, f_append:=True) = "CCC"
+    sResult = mFso.FileTxt(f_file:=sFl, f_split:=sSplit)
     Debug.Assert Split(sResult, sSplit)(0) = "AAA"
     Debug.Assert Split(sResult, sSplit)(1) = "BBB"
     Debug.Assert Split(sResult, sSplit)(2) = "CCC"
@@ -439,9 +438,9 @@ Public Sub Test_08_File_Txt_Let_Get()
     fso.CreateTextFile FileName:=sFl
     Set oFl = fso.GetFile(sFl)
     sFl = oFl.Path
-    mFso.FileTxt(ft_file:=oFl, ft_append:=False) = "AAA" & vbCrLf & "BBB"
-    mFso.FileTxt(ft_file:=oFl, ft_append:=True) = "CCC"
-    sResult = mFso.FileTxt(ft_file:=oFl, ft_split:=sSplit)
+    mFso.FileTxt(f_file:=oFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
+    mFso.FileTxt(f_file:=oFl, f_append:=True) = "CCC"
+    sResult = mFso.FileTxt(f_file:=oFl, f_split:=sSplit)
     Debug.Assert Split(sResult, sSplit)(0) = "AAA"
     Debug.Assert Split(sResult, sSplit)(1) = "BBB"
     Debug.Assert Split(sResult, sSplit)(2) = "CCC"
@@ -479,55 +478,55 @@ Public Sub Test_09_File_Differs()
 
     mBasic.BoP ErrSrc(PROC)
     ' Prepare
-    mFso.FileTxt(ft_file:=sF1, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    mFso.FileTxt(ft_file:=sF2, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
     Set f1 = fso.GetFile(sF1)
     Set f2 = fso.GetFile(sF2)
 
     ' Test 1: Differs.Count = 0
-    Set dctDiff = mFso.FileDiffers(fd_file1:=f1 _
-                              , fd_file2:=f2 _
-                              , fd_ignore_empty_records:=True _
-                              , fd_stop_after:=2 _
+    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
+                              , f_file2:=f2 _
+                              , f_ignore_empty_records:=True _
+                              , f_stop_after:=2 _
                                )
     Debug.Assert dctDiff.Count = 0
 
     ' Test 2: Differs.Count = 1
-    mFso.FileTxt(ft_file:=sF1, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    mFso.FileTxt(ft_file:=sF2, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
+    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
     Set f1 = fso.GetFile(sF1)
     Set f2 = fso.GetFile(sF2)
     
-    Set dctDiff = mFso.FileDiffers(fd_file1:=f1 _
-                              , fd_file2:=f2 _
-                              , fd_ignore_empty_records:=True _
-                              , fd_stop_after:=2 _
+    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
+                              , f_file2:=f2 _
+                              , f_ignore_empty_records:=True _
+                              , f_stop_after:=2 _
                                )
     Debug.Assert dctDiff.Count = 1
     
     ' Test 3: Differs.Count = 1
-    mFso.FileTxt(ft_file:=sF1, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
-    mFso.FileTxt(ft_file:=sF2, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
+    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
     Set f1 = fso.GetFile(sF1)
     Set f2 = fso.GetFile(sF2)
     
-    Set dctDiff = mFso.FileDiffers(fd_file1:=f1 _
-                              , fd_file2:=f2 _
-                              , fd_ignore_empty_records:=True _
-                              , fd_stop_after:=2 _
+    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
+                              , f_file2:=f2 _
+                              , f_ignore_empty_records:=True _
+                              , f_stop_after:=2 _
                                )
     Debug.Assert dctDiff.Count = 1
     
     ' Test 4: Differs.Count = 1
-    mFso.FileTxt(ft_file:=sF1, ft_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    mFso.FileTxt(ft_file:=sF2, ft_append:=False) = "A" & vbCrLf & "X" & vbCrLf & "C"
+    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "X" & vbCrLf & "C"
     Set f1 = fso.GetFile(sF1)
     Set f2 = fso.GetFile(sF2)
     
-    Set dctDiff = mFso.FileDiffers(fd_file1:=f1 _
-                              , fd_file2:=f2 _
-                              , fd_ignore_empty_records:=True _
-                              , fd_stop_after:=2 _
+    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
+                              , f_file2:=f2 _
+                              , f_ignore_empty_records:=True _
+                              , f_stop_after:=2 _
                                )
     Debug.Assert dctDiff.Count = 1
 
@@ -560,10 +559,10 @@ Public Sub Test_09_File_Differs_False()
     sFile = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\mFso.bas"
     Set f1 = fso.GetFile(sFile)
     Set f2 = fso.GetFile(sFile)
-    mBasic.BoP ErrSrc(PROC), "fd_file1 = " & f1.Name & ", fd_file2 = " & f2.Name
+    mBasic.BoP ErrSrc(PROC), "f_file1 = " & f1.Name & ", f_file2 = " & f2.Name
     
     ' Test
-    Set dctDiff = mFso.FileDiffers(fd_file1:=f1, fd_file2:=f2, fd_ignore_empty_records:=True)
+    Set dctDiff = mFso.FileDiffers(f_file1:=f1, f_file2:=f2, f_ignore_empty_records:=True)
     Debug.Assert dctDiff.Count = 0
 
 xt: mBasic.EoP ErrSrc(PROC)
@@ -606,20 +605,20 @@ Public Sub Test_10_File_Arry_Get_Let()
     mFso.FileTxt(sFile1) = "xxx" & vbCrLf & "" & "yyy"
     
     '~~ Get the two lines as Array
-    a = mFso.FileArry(fa_file:=sFile1 _
-                 , fa_split:=vbCrLf _
+    a = mFso.FileArry(f_file:=sFile1 _
+                 , f_split:=vbCrLf _
                   )
     Debug.Assert a(LBound(a)) = "xxx"
     Debug.Assert a(UBound(a)) = "yyy"
 
     '~~ Write array to file-2
-    mFso.FileArry(fa_file:=sFile2 _
-             , fa_split:=vbCrLf _
+    mFso.FileArry(f_file:=sFile2 _
+             , f_split:=vbCrLf _
               ) = a
     Debug.Assert mFso.FileDiffers(fso.GetFile(sFile1), fso.GetFile(sFile2)).Count = 0
 
     '~~ Count empty records when array contains all text lines
-    a = mFso.FileArry(fa_file:=sFile1, fa_excl_empty_lines:=False)
+    a = mFso.FileArry(f_file:=sFile1, f_excl_empty_lines:=False)
     lInclEmpty = UBound(a) + 1
     lEmpty1 = 0
     For Each v In a
@@ -628,7 +627,7 @@ Public Sub Test_10_File_Arry_Get_Let()
     Next v
     
     '~~ Count empty records
-    a = mFso.FileArry(fa_file:=sFile1, fa_excl_empty_lines:=True)
+    a = mFso.FileArry(f_file:=sFile1, f_excl_empty_lines:=True)
     lExclEmpty = UBound(a) + 1
     Debug.Assert lExclEmpty = lInclEmpty - lEmpty1
     
@@ -986,7 +985,7 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     '~~ Test 1a ------------------------------------
     '~~ Copy a specific section to a new target file
     SourceFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
-    TargetFile = mFso.FileTemp(tmp_extension:=".dat")
+    TargetFile = mFso.FileTemp(f_extension:=".dat")
     sSectionName = mFso.PPsectionNames(SourceFile).Items()(0)
     mFso.PPsectionsCopy pp_source:=SourceFile _
                                 , pp_target:=TargetFile _
@@ -1011,7 +1010,7 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     '~~ Test 3 -------------------------------
     '~~ Copy all sections to a new target file (will be re-ordered ascending thereby)
     SourceFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
-    TargetFile = mFso.FileTemp(tmp_extension:=".dat")
+    TargetFile = mFso.FileTemp(f_extension:=".dat")
     mFso.PPsectionsCopy pp_source:=SourceFile _
                                 , pp_target:=TargetFile _
                                 , pp_sections:=mFso.PPsectionNames(SourceFile) _
