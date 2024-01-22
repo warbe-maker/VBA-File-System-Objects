@@ -34,6 +34,11 @@ Option Compare Text
 ' Public PrivateProfile file (PP) properties and services:
 ' ---------------------------------------------------
 ' Exists            see above
+' PPreorg           Reorganizes all sections and their value-names in a PP
+'                   by ordering sections and names in ascending sequence.
+' PPremoveNames     Removes provided value names, in a given Private
+'                   Properties File, when provided in a specific section,
+'                   else in all sections.
 ' PPsectionExists   Returns TRUE when a given section exists in a given PP
 ' PPsectionNames    Returns a Dictionary of all section names [...] in a PP.
 ' PPsections    r/w Returns named (or if no names are provideds all) sections
@@ -42,8 +47,6 @@ Option Compare Text
 '                   Dictionary all sections provided with all names to a PP.
 ' PPremoveSections  Removes the sections provided via by their given name.
 '                   Sections not existing are ignored.
-' PPreorg           Reorganizes all sections and their value-names in a PP
-'                   by ordering sections and names in ascending sequence.
 ' PPvalue       r/w Reads from or writes to a name from/to a PP.
 ' PPvalueNameExists Returns TRUE when a value-name exists in a PP under a
 '                   given section.
@@ -70,7 +73,7 @@ Option Compare Text
 ' Uses no other components. Will use optionally mErH, fMsg/mMsg when installed and
 ' activated (Cond. Comp. Args. `ErHComp = 1 : MsgComp = 1`).
 '
-' W. Rauschenberger, Berlin June 2022
+' W. Rauschenberger, Berlin Dec 2023
 ' See also https://github.com/warbe-maker/VBA-File-System-Objects.
 ' ----------------------------------------------------------------------------
 Private Const GITHUB_REPO_URL   As String = "https://github.com/warbe-maker/VBA-File-System-Objects"
@@ -1790,7 +1793,7 @@ Private Function NamesInArg(Optional ByVal v As Variant = Nothing) As Collection
         Case vbString
             If v <> vbNullString Then
                 For Each vName In Split(v, ",")
-                    cll.Add VBA.Trim$(v)
+                    cll.Add VBA.Trim$(vName)
                 Next vName
             End If
         Case Is >= vbArray
