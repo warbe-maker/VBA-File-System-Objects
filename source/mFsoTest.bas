@@ -8,20 +8,6 @@ Private Const SECTION_NAME = "Section-" ' for PrivateProfile services test
 Private Const VALUE_NAME = "-Name-"     ' for PrivateProfile services test
 Private Const VALUE_STRING = "-Value-"  ' for PrivateProfile services test
     
-Private cllTestFiles    As Collection
-
-Private Property Get TestProc_SectionName(Optional ByVal l As Long)
-    TestProc_SectionName = SECTION_NAME & Format(l, "00")
-End Property
-
-Private Property Get TestProc_ValueName(Optional ByVal lS As Long, Optional ByVal lV As Long)
-    TestProc_ValueName = SECTION_NAME & Format(lS, "00") & VALUE_NAME & Format(lV, "00")
-End Property
-
-Private Property Get TestProc_ValueString(Optional ByVal lS As Long, Optional ByVal lV As Long)
-    TestProc_ValueString = SECTION_NAME & Format(lS, "00") & VALUE_STRING & Format(lV, "00")
-End Property
-
 Private Property Let Test_Status(ByVal s As String)
     If s <> vbNullString Then
         Application.StatusBar = "Regression test " & ThisWorkbook.Name & " module 'mFso': " & s
@@ -43,77 +29,6 @@ End Function
 
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mFsoTest." & sProc
-End Function
-
-Private Function TestProc_PrivateProfile_File(ByVal ts_sections As Long, _
-                                              ByVal ts_values As Long) As String
-' ----------------------------------------------------------------------------
-' Returns the name of a temporary file with n (ts_sections) sections, each
-' with m (ts_values) values all in descending order. Each test file's name is
-' saved to a Collection (cllTestFiles) allowing to delete them all at the end
-' of the test.
-' ----------------------------------------------------------------------------
-    Const PROC = "TestProc_PrivateProfile_File"
-    
-    On Error GoTo eh
-    Dim i       As Long
-    Dim j       As Long
-    Dim sFile   As String
-    
-    mBasic.BoP ErrSrc(PROC)
-    sFile = mFso.FileTemp(f_extension:=".dat")
-    For i = ts_sections To 1 Step -1
-        For j = ts_values To 1 Step -1
-            mFso.PPvalue(pp_file:=sFile _
-                                 , pp_section:=TestProc_SectionName(i) _
-                                 , pp_value_name:=TestProc_ValueName(i, j) _
-                                  ) = TestProc_ValueString(i, j)
-        Next j
-    Next i
-    TestProc_PrivateProfile_File = sFile
-    If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
-    cllTestFiles.Add sFile
-    
-xt: mBasic.EoP ErrSrc(PROC)
-    Exit Function
-    
-eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Function
-
-Private Sub TestProc_RemoveTestFiles()
-    
-    If mFso.Exists(x_folder:=ThisWorkbook.Path, x_file:="rad*.dat") Then
-        Kill ThisWorkbook.Path & "\rad*.dat"
-    End If
-    
-End Sub
-
-Private Function TestProc_TempFile() As String
-' ----------------------------------------------------------------------------
-'
-' ----------------------------------------------------------------------------
-    Const PROC = "TestProc_TempFile"
-    
-    On Error GoTo eh
-    Dim sFile   As String
-    
-    mBasic.BoP ErrSrc(PROC)
-    sFile = mFso.FileTemp(f_extension:=".dat")
-    TestProc_TempFile = sFile
-    
-    If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
-    cllTestFiles.Add sFile
-
-xt: mBasic.EoP ErrSrc(PROC)
-    Exit Function
-    
-eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
 End Function
 
 Public Sub Test_00_Regression()
@@ -168,17 +83,17 @@ Public Sub Test_00_Regression_Common_Services()
     mBasic.BoP ErrSrc(PROC)
     
     mErH.Asserted AppErr(1) ' For the very last test on an error condition
-    mFsoTest.Test_01_File_Temp
+    mFsoTest.Test_01_FileTemp
     mFsoTest.Test_02_File_Exists
     mFsoTest.Test_03_FilePathSplit
-    mFsoTest.Test_07_File_Picked
-    mFsoTest.Test_08_File_Txt_Let_Get
-    mFsoTest.Test_09_File_Differs_False
-    mFsoTest.Test_09_File_Differs
-    mFsoTest.Test_10_File_Arry_Get_Let
-    mFsoTest.Test_11_File_Search
-    mFsoTest.Test_12_IsValid_FileFolder_Name
-    mFsoTest.Test_13_Folders_Test
+    mFsoTest.Test_07_FilePicked
+    mFsoTest.Test_08_FileString_Let_Get
+    mFsoTest.Test_09_FileDiffersFromFile_False
+    mFsoTest.Test_09_FileDiffersFromFile
+    mFsoTest.Test_10_FileArry_Get_Let
+    mFsoTest.Test_11_FileSearch
+    mFsoTest.Test_12_FolderIsValidName
+    mFsoTest.Test_13_Folders
     mFsoTest.Test_14_RenameSubFolders
 
 xt: mBasic.EoP ErrSrc(PROC)
@@ -224,11 +139,11 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_01_File_Temp()
+Public Sub Test_01_FileTemp()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_01_File_Temp"
+    Const PROC = "Test_01_FileTemp"
 
     Dim sTemp As String
     
@@ -241,14 +156,13 @@ End Sub
 
 Public Sub Test_02_File_Exists()
 ' ----------------------------------------------------------------------------
-'
+' Test of all file exists variants.
 ' ----------------------------------------------------------------------------
     Const PROC = "Test_02_File_Exists"
     
     On Error GoTo eh
-    Dim cll     As Collection
-    Dim fso     As New FileSystemObject
-    Dim sFile   As String
+    Dim cll         As Collection
+    Dim sFileName   As String
     
     mBasic.BoP ErrSrc(PROC)
     
@@ -261,34 +175,34 @@ Public Sub Test_02_File_Exists()
     Debug.Assert mFso.Exists(x_file:=ThisWorkbook.FullName) = True
 
     '~~ Section exists
-    sFile = TestProc_PrivateProfile_File(ts_sections:=3, ts_values:=3)
-    Debug.Assert mFso.Exists(x_file:=sFile _
-                           , x_section:=TestProc_SectionName(2) & "x" _
-                            ) = False
-    Debug.Assert mFso.Exists(x_file:=sFile _
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues)
+    Debug.Assert Not mFso.Exists(x_file:=sFileName _
+                               , x_section:=TestProc_SectionName(2) & "x" _
+                                )
+    Debug.Assert mFso.Exists(x_file:=sFileName _
                            , x_section:=TestProc_SectionName(2) _
-                            ) = True
+                            )
     '~~ Value-Name exists
-    Debug.Assert mFso.Exists(x_file:=sFile _
-                            , x_section:=TestProc_SectionName(2) _
-                            , x_value_name:=TestProc_ValueName(2, 2) & "x" _
-                             ) = False
-    Debug.Assert mFso.Exists(x_file:=sFile _
+    Debug.Assert Not mFso.Exists(x_file:=sFileName _
+                               , x_section:=TestProc_SectionName(2) _
+                               , x_value_name:=TestProc_ValueName(2, 2) & "x" _
+                                )
+    Debug.Assert mFso.Exists(x_file:=sFileName _
                             , x_section:=TestProc_SectionName(2) _
                             , x_value_name:=TestProc_ValueName(2, 2) _
-                             ) = True
+                             )
 
     '~~ File by wildcard, in any sub-folder, exactly one
     Debug.Assert mFso.Exists(x_folder:=ThisWorkbook.Path _
-                            , x_file:="*.xl*" _
-                            , x_result_files:=cll) = True
+                           , x_file:="*.xl*" _
+                           , x_result_files:=cll)
     Debug.Assert cll.Count = 1
     Debug.Assert cll(1).Path = ThisWorkbook.FullName
             
     '~~ File by wildcard, in any sub-folder, more than one
     Debug.Assert mFso.Exists(x_folder:=ThisWorkbook.Path _
-                            , x_file:="fMsg.fr*" _
-                            , x_result_files:=cll) = True
+                           , x_file:="fMsg.fr*" _
+                           , x_result_files:=cll) = True
     Debug.Assert cll.Count = 2
     Debug.Assert cll(1).Name = "fMsg.frm"
     Debug.Assert cll(2).Name = "fMsg.frx"
@@ -348,11 +262,11 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_07_File_Picked()
+Public Sub Test_07_FilePicked()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_07_File_Picked"
+    Const PROC = "Test_07_FilePicked"
     
     On Error GoTo eh
     Dim fl As File
@@ -388,18 +302,17 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_08_File_Txt_Let_Get()
+Public Sub Test_08_FileString_Let_Get()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_08_File_Txt_Let_Get"
+    Const PROC = "Test_08_FileString_Let_Get"
     
     On Error GoTo eh
     Dim sFl     As String
     Dim sTest   As String
     Dim sResult As String
     Dim sSplit  As String
-    Dim fso     As New FileSystemObject
     Dim oFl     As File
     
     Test_Status = ErrSrc(PROC)
@@ -408,46 +321,45 @@ Public Sub Test_08_File_Txt_Let_Get()
     '~~ Test 1: Write one recod
     sFl = mFso.FileTemp()
     sTest = "My string"
-    mFso.FileTxt(f_file:=sFl _
-               , f_append:=False _
-                ) = sTest
-    sResult = mFso.FileTxt(f_file:=sFl, f_split:=sSplit)
+    mFso.FileString(f_file_full_name:=sFl _
+                  , f_append:=False _
+                   ) = sTest
+    sResult = mFso.FileString(f_file_full_name:=sFl, f_split:=sSplit)
     Debug.Assert Split(sResult, sSplit)(0) = sTest
-    fso.DeleteFile sFl
+    FSo.DeleteFile sFl
     
     '~~ Test 2: Empty file
     sFl = mFso.FileTemp()
     sTest = vbNullString
-    mFso.FileTxt(f_file:=sFl, f_append:=False) = sTest
-    sResult = mFso.FileTxt(f_file:=sFl, f_split:=sSplit)
+    mFso.FileString(f_file_full_name:=sFl, f_append:=False) = sTest
+    sResult = mFso.FileString(f_file_full_name:=sFl, f_split:=sSplit)
     Debug.Assert sResult = vbNullString
-    fso.DeleteFile sFl
+    FSo.DeleteFile sFl
 
     '~~ Test 3: Append
     sFl = mFso.FileTemp()
-    mFso.FileTxt(f_file:=sFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
-    mFso.FileTxt(f_file:=sFl, f_append:=True) = "CCC"
-    sResult = mFso.FileTxt(f_file:=sFl, f_split:=sSplit)
+    mFso.FileString(f_file_full_name:=sFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
+    mFso.FileString(f_file_full_name:=sFl, f_append:=True) = "CCC"
+    sResult = mFso.FileString(f_file_full_name:=sFl, f_split:=sSplit)
     Debug.Assert Split(sResult, sSplit)(0) = "AAA"
     Debug.Assert Split(sResult, sSplit)(1) = "BBB"
     Debug.Assert Split(sResult, sSplit)(2) = "CCC"
-    fso.DeleteFile sFl
+    FSo.DeleteFile sFl
 
     '~~ Test 4: Write with append and read with file as object
     sFl = mFso.FileTemp()
-    fso.CreateTextFile FileName:=sFl
-    Set oFl = fso.GetFile(sFl)
+    FSo.CreateTextFile FileName:=sFl
+    Set oFl = FSo.GetFile(sFl)
     sFl = oFl.Path
-    mFso.FileTxt(f_file:=oFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
-    mFso.FileTxt(f_file:=oFl, f_append:=True) = "CCC"
-    sResult = mFso.FileTxt(f_file:=oFl, f_split:=sSplit)
+    mFso.FileString(f_file_full_name:=oFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
+    mFso.FileString(f_file_full_name:=oFl, f_append:=True) = "CCC"
+    sResult = mFso.FileString(f_file_full_name:=oFl, f_split:=sSplit)
     Debug.Assert Split(sResult, sSplit)(0) = "AAA"
     Debug.Assert Split(sResult, sSplit)(1) = "BBB"
     Debug.Assert Split(sResult, sSplit)(2) = "CCC"
-    fso.DeleteFile sFl
+    FSo.DeleteFile sFl
 
-xt: Set fso = Nothing
-    mBasic.EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
@@ -456,14 +368,13 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_09_File_Differs()
+Public Sub Test_09_FileDiffersFromFile()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_09_File_Differs"
+    Const PROC = "Test_09_FileDiffersFromFile"
     
     On Error GoTo eh
-    Dim fso     As New FileSystemObject
     Dim f1      As File
     Dim f2      As File
     Dim dctDiff As Dictionary
@@ -478,61 +389,53 @@ Public Sub Test_09_File_Differs()
 
     mBasic.BoP ErrSrc(PROC)
     ' Prepare
-    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    Set f1 = fso.GetFile(sF1)
-    Set f2 = fso.GetFile(sF2)
+    mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    Set f1 = FSo.GetFile(sF1)
+    Set f2 = FSo.GetFile(sF2)
 
-    ' Test 1: Differs.Count = 0
-    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
-                              , f_file2:=f2 _
-                              , f_ignore_empty_records:=True _
-                              , f_stop_after:=2 _
-                               )
-    Debug.Assert dctDiff.Count = 0
+    ' Test 1: Differs = False
+    Debug.Assert Not mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                            , f_file_from:=f2 _
+                                            , f_exclude_empty:=True _
+                                             )
+    
 
     ' Test 2: Differs.Count = 1
-    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
-    Set f1 = fso.GetFile(sF1)
-    Set f2 = fso.GetFile(sF2)
+    mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
+    Set f1 = FSo.GetFile(sF1)
+    Set f2 = FSo.GetFile(sF2)
     
-    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
-                              , f_file2:=f2 _
-                              , f_ignore_empty_records:=True _
-                              , f_stop_after:=2 _
-                               )
-    Debug.Assert dctDiff.Count = 1
+    Debug.Assert mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                        , f_file_from:=f2 _
+                                        , f_exclude_empty:=True _
+                                          )
     
     ' Test 3: Differs.Count = 1
-    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
-    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    Set f1 = fso.GetFile(sF1)
-    Set f2 = fso.GetFile(sF2)
+    mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
+    mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    Set f1 = FSo.GetFile(sF1)
+    Set f2 = FSo.GetFile(sF2)
     
-    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
-                              , f_file2:=f2 _
-                              , f_ignore_empty_records:=True _
-                              , f_stop_after:=2 _
-                               )
-    Debug.Assert dctDiff.Count = 1
+    Debug.Assert mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                        , f_file_from:=f2 _
+                                        , f_exclude_empty:=True _
+                                         )
     
     ' Test 4: Differs.Count = 1
-    mFso.FileTxt(f_file:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-    mFso.FileTxt(f_file:=sF2, f_append:=False) = "A" & vbCrLf & "X" & vbCrLf & "C"
-    Set f1 = fso.GetFile(sF1)
-    Set f2 = fso.GetFile(sF2)
+    mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
+    mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "X" & vbCrLf & "C"
+    Set f1 = FSo.GetFile(sF1)
+    Set f2 = FSo.GetFile(sF2)
     
-    Set dctDiff = mFso.FileDiffers(f_file1:=f1 _
-                              , f_file2:=f2 _
-                              , f_ignore_empty_records:=True _
-                              , f_stop_after:=2 _
-                               )
-    Debug.Assert dctDiff.Count = 1
-
+    Debug.Assert mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                        , f_file_from:=f2 _
+                                        , f_exclude_empty:=True _
+                                         )
 xt: mBasic.EoP ErrSrc(PROC)
-    If fso.FileExists(sF1) Then fso.DeleteFile (sF1)
-    If fso.FileExists(sF2) Then fso.DeleteFile (sF2)
+    If FSo.FileExists(sF1) Then FSo.DeleteFile (sF1)
+    If FSo.FileExists(sF2) Then FSo.DeleteFile (sF2)
     Exit Sub
     
 eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
@@ -541,29 +444,29 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_09_File_Differs_False()
+Public Sub Test_09_FileDiffersFromFile_False()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_09_File_Differs"
+    Const PROC = "Test_09_FileDiffersFromFile_False"
     
     On Error GoTo eh
-    Dim fso     As New FileSystemObject
-    Dim sFile   As String
-    Dim f1      As File
-    Dim f2      As File
-    Dim dctDiff As Dictionary
+    Dim sFileName   As String
+    Dim f1          As File
+    Dim f2          As File
+    Dim dctDiff     As Dictionary
     
+    mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     ' Prepare
-    sFile = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\mFso.bas"
-    Set f1 = fso.GetFile(sFile)
-    Set f2 = fso.GetFile(sFile)
-    mBasic.BoP ErrSrc(PROC), "f_file1 = " & f1.Name & ", f_file2 = " & f2.Name
+    sFileName = FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\mFso.bas"
+    Set f1 = FSo.GetFile(sFileName)
+    Set f2 = FSo.GetFile(sFileName)
     
     ' Test
-    Set dctDiff = mFso.FileDiffers(f_file1:=f1, f_file2:=f2, f_ignore_empty_records:=True)
-    Debug.Assert dctDiff.Count = 0
+    Debug.Assert Not mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                            , f_file_from:=f2 _
+                                            , f_exclude_empty:=True)
 
 xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
@@ -575,11 +478,11 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
 End Sub
 
   
-Public Sub Test_10_File_Arry_Get_Let()
+Public Sub Test_10_FileArry_Get_Let()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_10_File_Arry_Get_Let"
+    Const PROC = "Test_10_FileArry_Get_Let"
     
     On Error GoTo eh
     Dim sFile1      As String
@@ -588,37 +491,35 @@ Public Sub Test_10_File_Arry_Get_Let()
     Dim lEmpty1     As Long
     Dim lExclEmpty  As Long
     Dim lEmpty2     As Long
-    Dim fso         As New FileSystemObject
     Dim a           As Variant
     Dim v           As Variant
     
     mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
-    sFile1 = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
-    sFile2 = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
+    sFile1 = FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
+    sFile2 = FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "Common-Components\mFso.bas"
     
     sFile1 = mFso.FileTemp()
     sFile2 = mFso.FileTemp()
     
     '~~ Write to lines to sFile1
-    mFso.FileTxt(sFile1) = "xxx" & vbCrLf & "" & "yyy"
+    mFso.FileString(sFile1) = "xxx" & vbCrLf & "" & "yyy"
     
     '~~ Get the two lines as Array
-    a = mFso.FileArry(f_file:=sFile1 _
-                 , f_split:=vbCrLf _
-                  )
+    a = mFso.FileArry(f_file_full_name:=sFile1)
     Debug.Assert a(LBound(a)) = "xxx"
     Debug.Assert a(UBound(a)) = "yyy"
 
     '~~ Write array to file-2
-    mFso.FileArry(f_file:=sFile2 _
+    mFso.FileArry(f_file_full_name:=sFile2 _
              , f_split:=vbCrLf _
               ) = a
-    Debug.Assert mFso.FileDiffers(fso.GetFile(sFile1), fso.GetFile(sFile2)).Count = 0
+    Debug.Assert mFso.FileDiffersFromFile(f_file_this:=sFile1 _
+                                        , f_file_from:=sFile2) = False
 
     '~~ Count empty records when array contains all text lines
-    a = mFso.FileArry(f_file:=sFile1, f_excl_empty_lines:=False)
+    a = mFso.FileArry(f_file_full_name:=sFile1, f_exclude_empty:=False)
     lInclEmpty = UBound(a) + 1
     lEmpty1 = 0
     For Each v In a
@@ -627,15 +528,14 @@ Public Sub Test_10_File_Arry_Get_Let()
     Next v
     
     '~~ Count empty records
-    a = mFso.FileArry(f_file:=sFile1, f_excl_empty_lines:=True)
+    a = mFso.FileArry(f_file_full_name:=sFile1, f_exclude_empty:=True)
     lExclEmpty = UBound(a) + 1
     Debug.Assert lExclEmpty = lInclEmpty - lEmpty1
     
-xt: With fso
+xt: With FSo
         .DeleteFile sFile1
         If .FileExists(sFile2) Then .DeleteFile sFile2
     End With
-    Set fso = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
@@ -645,31 +545,30 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_11_File_Search()
+Public Sub Test_11_FileSearch()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_11_File_Search"
+    Const PROC = "Test_11_FileSearch"
     
     On Error GoTo eh
     Dim cll As Collection
-    Dim fso As New FileSystemObject
     
     mBasic.BoP ErrSrc(PROC)
     Test_Status = ErrSrc(PROC)
     
     '~~ Test 1: Including subfolders, several files found
-    Set cll = mFso.FilesSearch(fs_root:=fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\" _
-                             , fs_mask:="*.bas*" _
-                             , fs_stop_after:=5 _
+    Set cll = mFso.FilesSearch(f_root:=FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\" _
+                             , f_mask:="*.bas*" _
+                             , f_stop_after:=5 _
                               )
     Debug.Assert cll.Count > 2
 
     '~~ Test 2: Not including subfolders, no files found
-    Set cll = mFso.FilesSearch(fs_root:="e:\Ablage\Excel VBA\DevAndTest\Common" _
-                             , fs_mask:="*CompMan*.frx" _
-                             , fs_stop_after:=5 _
-                             , fs_in_subfolders:=False _
+    Set cll = mFso.FilesSearch(f_root:="e:\Ablage\Excel VBA\DevAndTest\Common" _
+                             , f_mask:="*CompMan*.frx" _
+                             , f_stop_after:=5 _
+                             , f_in_subfolders:=False _
                               )
     Debug.Assert cll.Count = 0
 
@@ -682,11 +581,11 @@ eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_12_IsValid_FileFolder_Name()
+Public Sub Test_12_FolderIsValidName()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_12_IsValid_FileFolder_Name"
+    Const PROC = "Test_12_FolderIsValidName"
     
     mBasic.BoP ErrSrc(PROC)
     '~~ Test 1: Valid Folder Name
@@ -702,13 +601,13 @@ Public Sub Test_12_IsValid_FileFolder_Name()
     
 End Sub
 
-Public Sub Test_13_Folders_Test()
-    Const PROC = "Test_13_Folders_Test"
+Public Sub Test_13_Folders()
+    Const PROC = "Test_13_Folders"
     
     Dim TestFolder As String
-    Dim fso As New FileSystemObject
     
-    TestFolder = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path
+    mBasic.BoP ErrSrc(PROC)
+    TestFolder = FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path
     
     Dim v       As Variant
     Dim cll     As Collection
@@ -744,25 +643,60 @@ Public Sub Test_13_Folders_Test()
     For Each v In cll
         Debug.Print v.Path
     Next v
+    mBasic.EoP ErrSrc(PROC)
         
-    Set fso = Nothing
 End Sub
 
 Public Sub Test_14_RenameSubFolders()
     Const PROC = "Test_14_RenameSubFolders"
     
-    Dim cllRenamed  As Collection
+    Dim cllRenamed      As Collection
+    Dim sFolderOldPath  As String
+    Dim sFolderNewPath  As String
+    Dim sFolderNewName  As String
+    Dim sFolderOldName  As String
+    Dim sFolderRootPath     As String
     
     mBasic.BoP ErrSrc(PROC)
-    mFso.RenameSubFolders ThisWorkbook.Path & "\Test", "Sub_2_2", "Sub_2_2_renamed", cllRenamed
+    sFolderRootPath = ThisWorkbook.Path & "\Test"
+    sFolderOldName = "SubFolder"
+    sFolderNewName = "SubFolder_renamed"
+    
+    '~~ Test 1: Rename one sub-folder only
+    Set cllRenamed = New Collection
+    Test_14_RenameSubFolders_Prepare sFolderRootPath, sFolderOldName
+    
+    mFso.RenameSubFolders sFolderRootPath & "\Test1", sFolderOldName, sFolderNewName, cllRenamed
     Debug.Assert cllRenamed.Count = 1
-    Debug.Assert cllRenamed(1).Path = ThisWorkbook.Path & "\Test\Sub_2\Sub_2_2_renamed"
+    Debug.Assert cllRenamed(1).Path = sFolderRootPath & "\Test1\SubFolder_renamed"
 
-    mFso.RenameSubFolders ThisWorkbook.Path & "\Test", "Sub_2_2_renamed", "Sub_2_2", cllRenamed
-    Debug.Assert cllRenamed.Count = 1
-    Debug.Assert cllRenamed(1).Path = ThisWorkbook.Path & "\Test\Sub_2\Sub_2_2"
+    '~~ Test 2: Rename all (2) sub-folders
+    Set cllRenamed = New Collection
+    Test_14_RenameSubFolders_Prepare sFolderRootPath, sFolderOldName
+    sFolderRootPath = ThisWorkbook.Path & "\Test"
+    
+    mFso.RenameSubFolders sFolderRootPath, sFolderOldName, sFolderNewName, cllRenamed
+    Debug.Assert cllRenamed.Count = 2
+    Debug.Assert cllRenamed(1).Path = sFolderRootPath & "\Test1\SubFolder_renamed"
+    Debug.Assert cllRenamed(2).Path = sFolderRootPath & "\Test2\SubFolder_renamed"
+    
+    Set cllRenamed = Nothing
     mBasic.EoP ErrSrc(PROC)
+    
+End Sub
 
+Private Sub Test_14_RenameSubFolders_Prepare(ByVal s_path As String, _
+                                             ByVal s_folder_old_name As String)
+                                             
+    With FSo
+        If .FolderExists(s_path) Then .DeleteFolder s_path
+        .CreateFolder s_path
+        .CreateFolder s_path & "\Test1"
+        .CreateFolder s_path & "\Test2"
+        .CreateFolder s_path & "\Test1\" & s_folder_old_name
+        .CreateFolder s_path & "\Test2\" & s_folder_old_name
+    End With
+    
 End Sub
 
 Public Sub Test_91_PrivateProfile_SectionsNames()
@@ -772,14 +706,13 @@ Public Sub Test_91_PrivateProfile_SectionsNames()
     Const PROC = "Test_91_PrivateProfile_SectionsNames"
     
     On Error GoTo eh
-    Dim sFile   As String
-    Dim fso     As New FileSystemObject
-    Dim dct     As Dictionary
+    Dim sFileName   As String
+    Dim dct         As Dictionary
     
     mBasic.BoP ErrSrc(PROC)
-    sFile = TestProc_PrivateProfile_File(ts_sections:=3, ts_values:=3)
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues)
     
-    Set dct = mFso.PPsectionNames(sFile)
+    Set dct = mFso.PPsectionNames(sFileName)
     Debug.Assert dct.Count = 3
     Debug.Assert dct.Items()(0) = TestProc_SectionName(1)
     Debug.Assert dct.Items()(1) = TestProc_SectionName(2)
@@ -787,7 +720,6 @@ Public Sub Test_91_PrivateProfile_SectionsNames()
 
 xt: mBasic.EoP ErrSrc(PROC)
     TestProc_RemoveTestFiles
-    Set fso = Nothing
     Set dct = Nothing
     Exit Sub
     
@@ -804,14 +736,13 @@ Public Sub Test_92_PrivateProfile_ValueNames()
     Const PROC = "Test_92_PrivateProfile_ValueNames"
     
     On Error GoTo eh
-    Dim sFile   As String
-    Dim dct     As Dictionary
-    Dim fso     As New FileSystemObject
+    Dim sFileName   As String
+    Dim dct         As Dictionary
     
     mBasic.BoP ErrSrc(PROC)
-    sFile = TestProc_PrivateProfile_File(ts_sections:=5, ts_values:=3)
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues)
     
-    Set dct = mFso.PPvalues(pp_file:=sFile, pp_section:=TestProc_SectionName(2))
+    Set dct = mFso.PPvalues(pp_file:=sFileName, pp_section:=TestProc_SectionName(2))
     mBasic.EoP ErrSrc(PROC)
     Debug.Assert dct.Count = 3
     Debug.Assert dct.Keys()(0) = TestProc_ValueName(2, 1)
@@ -819,7 +750,6 @@ Public Sub Test_92_PrivateProfile_ValueNames()
     Debug.Assert dct.Keys()(2) = TestProc_ValueName(2, 3)
        
 xt: TestProc_RemoveTestFiles
-    Set fso = Nothing
     Exit Sub
 
 eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
@@ -835,37 +765,35 @@ Public Sub Test_93_PrivateProfile_Value()
     Const PROC = "Test_93_PrivateProfile_Value"
     
     On Error GoTo eh
-    Dim fso         As New FileSystemObject
-    Dim sFile       As String
+    Dim sFileName   As String
     Dim cyValue     As Currency: cyValue = 12345.6789
     Dim cyResult    As Currency
     
     mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
-    sFile = TestProc_TempFile
+    sFileName = TestProc_TempFile
             
     '~~ Test 1: Read non-existing value from a non-existing file
-    Debug.Assert mFso.PPvalue(pp_file:=sFile _
+    Debug.Assert mFso.PPvalue(pp_file:=sFileName _
                            , pp_section:="Any" _
                            , pp_value_name:="Any" _
                             ) = vbNullString
     
     '~~ Test 2: Write values
-    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
-    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
-    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
-    mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2)) = cyValue
+    mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
+    mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
+    mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
+    mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2)) = cyValue
     
     '~~ Test 2: Assert written values
-    Debug.Assert mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
-    Debug.Assert mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
-    Debug.Assert mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
-    cyResult = mFso.PPvalue(pp_file:=sFile, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2))
+    Debug.Assert mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 1)) = TestProc_ValueString(1, 1)
+    Debug.Assert mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(1), pp_value_name:=TestProc_ValueName(1, 2)) = TestProc_ValueString(1, 2)
+    Debug.Assert mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 1)) = TestProc_ValueString(2, 1)
+    cyResult = mFso.PPvalue(pp_file:=sFileName, pp_section:=TestProc_SectionName(2), pp_value_name:=TestProc_ValueName(2, 2))
     Debug.Assert cyResult = cyValue
     Debug.Assert VarType(cyResult) = vbCurrency
     
 xt: TestProc_RemoveTestFiles
-    Set fso = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
@@ -883,18 +811,15 @@ Public Sub Test_94_PrivateProfile_Values()
     
     On Error GoTo eh
     Dim dct         As Dictionary
-    Dim sFile       As String
-    Dim fso         As New FileSystemObject
+    Dim sFileName   As String
     
     mBasic.BoP ErrSrc(PROC)
-    sFile = TestProc_PrivateProfile_File(ts_sections:=3 _
-                               , ts_values:=3 _
-                                )
-
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues)
+    
     '~~ Test 1: All values of one section
-    Set dct = mFso.PPvalues(pp_file:=sFile _
-                         , pp_section:=TestProc_SectionName(2) _
-                          )
+    Set dct = mFso.PPvalues(pp_file:=sFileName _
+                          , pp_section:=TestProc_SectionName(2) _
+                           )
     '~~ Test 1: Assert the content of the result Dictionary
     Debug.Assert dct.Count = 3
     Debug.Assert dct.Keys()(0) = TestProc_ValueName(2, 1)
@@ -905,14 +830,13 @@ Public Sub Test_94_PrivateProfile_Values()
     Debug.Assert dct.Items()(2) = TestProc_ValueString(2, 3)
     
     '~~ Test 2: No section provided
-    Debug.Assert mFso.PPvalues(sFile, vbNullString).Count = 0
+    Debug.Assert mFso.PPvalues(sFileName, vbNullString).Count = 0
 
     '~~ Test 3: Section does not exist
-    Debug.Assert mFso.PPvalues(sFile, "xxxxxxx").Count = 0
+    Debug.Assert mFso.PPvalues(sFileName, "xxxxxxx").Count = 0
 
 xt: TestProc_RemoveTestFiles
     Set dct = Nothing
-    Set fso = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
@@ -929,30 +853,30 @@ Public Sub Test_96_PrivateProfile_Entry_Exists()
     Const PROC = "Test_96_PrivateProfile_Entry_Exists"
 
     On Error GoTo eh
-    Dim sFile   As String
+    Dim sFileName   As String
     
     mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
-    sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=3)
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues)
        
     '~~ Section not exists
-    Debug.Assert mFso.PPsectionExists(pp_file:=sFile _
+    Debug.Assert mFso.PPsectionExists(pp_file:=sFileName _
                                               , pp_section:=TestProc_SectionName(100) _
                                                ) = False
     '~~ Section exists
-    Debug.Assert mFso.PPsectionExists(pp_file:=sFile _
-                                              , pp_section:=TestProc_SectionName(9) _
-                                              ) = True
+    Debug.Assert mFso.PPsectionExists(pp_file:=sFileName _
+                                    , pp_section:=TestProc_SectionName(9) _
+                                     ) = True
     '~~ Value-Name exists
-    Debug.Assert mFso.PPvalueExists(pp_file:=sFile _
-                                , pp_section:=TestProc_SectionName(7) _
-                                , pp_value_name:=TestProc_ValueName(7, 3) _
-                                 ) = True
+    Debug.Assert mFso.PPvalueExists(pp_file:=sFileName _
+                                  , pp_section:=TestProc_SectionName(7) _
+                                  , pp_value_name:=TestProc_ValueName(7, 3) _
+                                   ) = True
     '~~ Value-Name not exists
-    Debug.Assert mFso.PPvalueExists(pp_file:=sFile _
-                                , pp_section:=TestProc_SectionName(7) _
-                                , pp_value_name:=TestProc_ValueName(6, 3) _
-                                 ) = False
+    Debug.Assert mFso.PPvalueExists(pp_file:=sFileName _
+                                  , pp_section:=TestProc_SectionName(7) _
+                                  , pp_value_name:=TestProc_ValueName(6, 3) _
+                                   ) = False
     
 xt: TestProc_RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
@@ -974,7 +898,6 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     Const PROC = "Test_97_PrivateProfile_SectionsCopy"
     
     On Error GoTo eh
-    Dim fso             As New FileSystemObject
     Dim SourceFile      As String
     Dim TargetFile      As String
     Dim sSectionName    As String
@@ -984,7 +907,7 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     
     '~~ Test 1a ------------------------------------
     '~~ Copy a specific section to a new target file
-    SourceFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
+    SourceFile = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues) ' prepare PrivateProfile test file
     TargetFile = mFso.FileTemp(f_extension:=".dat")
     sSectionName = mFso.PPsectionNames(SourceFile).Items()(0)
     mFso.PPsectionsCopy pp_source:=SourceFile _
@@ -1004,12 +927,12 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
     Set dct = mFso.PPsectionNames(TargetFile)
     Debug.Assert dct.Count = 2
     Debug.Assert dct.Keys()(1) = TestProc_SectionName(8)
-    fso.DeleteFile SourceFile
-    fso.DeleteFile TargetFile
+    FSo.DeleteFile SourceFile
+    FSo.DeleteFile TargetFile
     
     '~~ Test 3 -------------------------------
     '~~ Copy all sections to a new target file (will be re-ordered ascending thereby)
-    SourceFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
+    SourceFile = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues) ' prepare PrivateProfile test file
     TargetFile = mFso.FileTemp(f_extension:=".dat")
     mFso.PPsectionsCopy pp_source:=SourceFile _
                                 , pp_target:=TargetFile _
@@ -1017,11 +940,10 @@ Public Sub Test_97_PrivateProfile_SectionsCopy()
                                 , pp_merge:=False
     '~~ Assert result
     Debug.Assert mFso.FileArry(TargetFile)(0) = "[" & TestProc_SectionName(1) & "]"
-    fso.DeleteFile SourceFile
-    fso.DeleteFile TargetFile
+    FSo.DeleteFile SourceFile
+    FSo.DeleteFile TargetFile
             
 xt: TestProc_RemoveTestFiles
-    Set fso = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
@@ -1038,19 +960,19 @@ Public Sub Test_98_PrivateProfile_PPreorg()
     Const PROC = "Test_98_PrivateProfile_PPreorg"
     
     On Error GoTo eh
-    Dim sFile   As String
-    Dim vFile   As Variant
+    Dim sFileName   As String
+    Dim vFile       As Variant
     
     mBasic.BoP ErrSrc(PROC)
     
-    sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
-    vFile = mFso.FileArry(sFile)
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues) ' prepare PrivateProfile test file
+    vFile = mFso.FileArry(sFileName)
     Debug.Assert vFile(0) = "[" & TestProc_SectionName(10) & "]"
     Debug.Assert vFile(1) = TestProc_ValueName(10, 10) & "=" & TestProc_ValueString(10, 10)
     
-    mFso.PPreorg sFile
+    mFso.PPreorg sFileName
     '~~ Assert result
-    vFile = mFso.FileArry(sFile)
+    vFile = mFso.FileArry(sFileName)
     Debug.Assert vFile(0) = "[" & TestProc_SectionName(1) & "]"
     Debug.Assert vFile(1) = TestProc_ValueName(1, 1) & "=" & TestProc_ValueString(1, 1)
     
@@ -1072,15 +994,15 @@ Public Sub Test_99_PrivateProfile_PPreorg_WithNoFileProvided()
     Const PROC = "Test_99_PrivateProfile_NoFileProvided"
     
     On Error GoTo eh
-    Dim sFile   As String
-    Dim vFile   As Variant
+    Dim sFileName   As String
+    Dim vFile       As Variant
     
     mBasic.BoP ErrSrc(PROC)
-    sFile = TestProc_PrivateProfile_File(ts_sections:=10, ts_values:=10) ' prepare PrivateProfile test file
+    sFileName = TestProc_PrivateProfile_File(mTest.lTestSections, mTest.lTestValues) ' prepare PrivateProfile test file
     
-    mFso.PPreorg sFile
+    mFso.PPreorg sFileName
     '~~ Assert result
-    vFile = mFso.FileArry(sFile)
+    vFile = mFso.FileArry(sFileName)
     Debug.Assert vFile(0) = "[" & TestProc_SectionName(1) & "]"
     Debug.Assert vFile(1) = TestProc_ValueName(1, 1) & "=" & TestProc_ValueString(1, 1)
               

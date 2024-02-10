@@ -1,70 +1,9 @@
-23-07-10 18:11:09 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-23-07-10 18:11:09 seconds seconds >> Regression Test module mFso
-23-07-10 18:11:09 00,0000         |  >> mFsoTest.Test_00_Regression
-23-07-10 18:11:09 00,0024         |  |  >> mFsoTest.Test_00_Regression_Common_Services
-23-07-10 18:11:09 00,0044         |  |  |  >> mFsoTest.Test_01_File_Temp
-23-07-10 18:11:09 00,0089 00,0045 |  |  |  << mFsoTest.Test_01_File_Temp
-23-07-10 18:11:09 00,0106         |  |  |  >> mFsoTest.Test_02_File_Exists
-23-07-10 18:11:09 00,0120         |  |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:09 00,0148 00,0027 |  |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:09 00,3496 00,3391 |  |  |  << mFsoTest.Test_02_File_Exists
-23-07-10 18:11:09 00,3503         |  |  |  >> mFsoTest.Test_03_FilePathSplit
-23-07-10 18:11:09 00,3566 00,0063 |  |  |  << mFsoTest.Test_03_FilePathSplit
-23-07-10 18:11:09 00,3573         |  |  |  >> mFsoTest.Test_07_File_Picked
-23-07-10 18:11:19 10,1440 09,7867 |  |  |  << mFsoTest.Test_07_File_Picked
-23-07-10 18:11:19 10,1501         |  |  |  >> mFsoTest.Test_08_File_Txt_Let_Get
-23-07-10 18:11:19 10,1575 00,0074 |  |  |  << mFsoTest.Test_08_File_Txt_Let_Get
-23-07-10 18:11:19 10,1598         |  |  |  >> mFsoTest.Test_09_File_Differs (f_file1 = mFso.bas, f_file2 = mFso.bas)
-23-07-10 18:11:19 10,1788 00,0190 |  |  |  << mFsoTest.Test_09_File_Differs
-23-07-10 18:11:19 10,1796         |  |  |  >> mFsoTest.Test_09_File_Differs
-23-07-10 18:11:19 10,1800         |  |  |  |  >> mFsoTest.Test_09_File_Differs
-23-07-10 18:11:19 10,1889 00,0089 |  |  |  |  << mFsoTest.Test_09_File_Differs
-23-07-10 18:11:19 10,1904         |  |  |  |  >> mFsoTest.Test_10_File_Arry_Get_Let
-23-07-10 18:11:19 10,1947 00,0042 |  |  |  |  << mFsoTest.Test_10_File_Arry_Get_Let
-23-07-10 18:11:19 10,1952         |  |  |  |  >> mFsoTest.Test_11_File_Search
-23-07-10 18:11:19 10,2698 00,0746 |  |  |  |  << mFsoTest.Test_11_File_Search
-23-07-10 18:11:19 10,2703         |  |  |  |  >> mFsoTest.Test_12_IsValid_FileFolder_Name
-23-07-10 18:11:19 10,3165 00,0461 |  |  |  |  << mFsoTest.Test_12_IsValid_FileFolder_Name
-23-07-10 18:11:26 16,6173         |  |  |  |  >> mFsoTest.Test_14_RenameSubFolders
-23-07-10 18:11:26 16,6476 00,0302 |  |  |  |  << mFsoTest.Test_14_RenameSubFolders
-23-07-10 18:11:26 16,6480 16,6456 |  << mFsoTest.Test_00_Regression_Common_Services
-23-07-10 18:11:26 16,6484         |  >> mFsoTest.Test_00_Regression_PrivateProfile_Services
-23-07-10 18:11:26 16,6487         |  |  >> mFsoTest.Test_91_PrivateProfile_SectionsNames
-23-07-10 18:11:26 16,6490         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 16,6505 00,0015 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 16,6514 00,0027 |  |  << mFsoTest.Test_91_PrivateProfile_SectionsNames
-23-07-10 18:11:26 16,7436         |  |  >> mFsoTest.Test_92_PrivateProfile_ValueNames
-23-07-10 18:11:26 16,7439         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 16,7461 00,0022 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 16,7474 00,0038 |  |  << mFsoTest.Test_92_PrivateProfile_ValueNames
-23-07-10 18:11:26 16,8376         |  |  >> mFsoTest.Test_93_PrivateProfile_Value
-23-07-10 18:11:26 16,8382         |  |  |  >> mFsoTest.TestProc_TempFile
-23-07-10 18:11:26 16,8385 00,0003 |  |  |  << mFsoTest.TestProc_TempFile
-23-07-10 18:11:26 16,9284 00,0908 |  |  << mFsoTest.Test_93_PrivateProfile_Value
-23-07-10 18:11:26 16,9289         |  |  >> mFsoTest.Test_94_PrivateProfile_Values
-23-07-10 18:11:26 16,9291         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 16,9305 00,0014 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,0209 00,0920 |  |  << mFsoTest.Test_94_PrivateProfile_Values
-23-07-10 18:11:26 17,0214         |  |  >> mFsoTest.Test_96_PrivateProfile_Entry_Exists
-23-07-10 18:11:26 17,0216         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,0458 00,0242 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,1370 00,1156 |  |  << mFsoTest.Test_96_PrivateProfile_Entry_Exists
-23-07-10 18:11:26 17,1377         |  |  >> mFsoTest.Test_97_PrivateProfile_SectionsCopy
-23-07-10 18:11:26 17,1381         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,1508 00,0127 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,1609         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,1731 00,0122 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,3014 00,1637 |  |  << mFsoTest.Test_97_PrivateProfile_SectionsCopy
-23-07-10 18:11:26 17,3018         |  |  >> mFsoTest.Test_98_PrivateProfile_PPreorg
-23-07-10 18:11:26 17,3020         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:26 17,3152 00,0131 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:27 17,4439 00,1421 |  |  << mFsoTest.Test_98_PrivateProfile_PPreorg
-23-07-10 18:11:27 17,4443         |  |  >> mFsoTest.Test_99_PrivateProfile_NoFileProvided
-23-07-10 18:11:27 17,4445         |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:27 17,4572 00,0127 |  |  |  << mFsoTest.TestProc_PrivateProfile_File
-23-07-10 18:11:27 17,5836 00,1393 |  |  << mFsoTest.Test_99_PrivateProfile_NoFileProvided
-23-07-10 18:11:27 17,6715 01,0231 |  << mFsoTest.Test_00_Regression_PrivateProfile_Services
-23-07-10 18:11:27 17,7596 17,7596 << mFsoTest.Test_00_Regression
-23-07-10 18:11:27 17,7596 17,7596 << Regression Test module mFso
-23-07-10 18:11:27                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-23-07-10 18:11:27                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+24-01-30 14:25:45 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-01-30 14:25:45 seconds seconds >> Regression Test module mFso
+24-01-30 14:25:45 00,0000         |  >> mFsoTest.Test_00_Regression
+24-01-30 14:25:45 00,0026         |  |  >> mFsoTest.Test_00_Regression_Common_Services
+24-01-30 14:25:45 00,0045         |  |  |  >> mFsoTest.Test_01_FileTemp
+24-01-30 14:25:45 00,0061 00,0016 |  |  |  << mFsoTest.Test_01_FileTemp
+24-01-30 14:25:45 00,0073         |  |  |  >> mFsoTest.Test_02_File_Exists
+24-01-30 14:25:45 00,0092         |  |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
+24-01-30 14:25:45 00,0461 00,0369 |  |  |  |  << mFsoTest.TestProc_PrivateProfile_File

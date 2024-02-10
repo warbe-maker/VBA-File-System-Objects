@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Option Explicit
-Private Const HOSTED_RAWS = "mFso"
+Private Const HOSTED_RAWS = "clsPrivProf,mFso"
 
 Private Sub Workbook_Open()
     mCompManClient.CompManService mCompManClient.SRVC_UPDATE_OUTDATED, HOSTED_RAWS
