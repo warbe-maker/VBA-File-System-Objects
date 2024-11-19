@@ -1,9 +1,0 @@
-24-01-30 14:25:45 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-01-30 14:25:45 seconds seconds >> Regression Test module mFso
-24-01-30 14:25:45 00,0000         |  >> mFsoTest.Test_00_Regression
-24-01-30 14:25:45 00,0026         |  |  >> mFsoTest.Test_00_Regression_Common_Services
-24-01-30 14:25:45 00,0045         |  |  |  >> mFsoTest.Test_01_FileTemp
-24-01-30 14:25:45 00,0061 00,0016 |  |  |  << mFsoTest.Test_01_FileTemp
-24-01-30 14:25:45 00,0073         |  |  |  >> mFsoTest.Test_02_File_Exists
-24-01-30 14:25:45 00,0092         |  |  |  |  >> mFsoTest.TestProc_PrivateProfile_File
-24-01-30 14:25:45 00,0461 00,0369 |  |  |  |  << mFsoTest.TestProc_PrivateProfile_File

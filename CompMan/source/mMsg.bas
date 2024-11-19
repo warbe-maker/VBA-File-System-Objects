@@ -175,6 +175,8 @@ Private Const WIN_NORMAL = 1         'Open Normal
 '***Error Codes***
 Private bModeLess           As Boolean
 Private fMonitor            As fMsg
+Private FSo                 As New FileSystemObject
+
 Public MsgInstances         As Dictionary    ' Collection of (possibly still)  active form instances
 
 Public Property Get DsplyWidthDPI() As Variant:         DsplyWidthDPI = Screen(enWidthDPI):                                 End Property
@@ -1122,7 +1124,7 @@ Private Function RoundUp(ByVal v As Variant) As Variant
     RoundUp = Int(v) + (v - Int(v) + 0.5) \ 1
 End Function
 
-Public Function Screen(ByVal item As enScreen) As Variant
+Public Function Screen(ByVal Item As enScreen) As Variant
 ' -------------------------------------------------------------------------
 ' Return display screen Item for monitor displaying ActiveWindow
 ' Patterned after Excel's built-in information functions CELL and INFO
@@ -1146,6 +1148,8 @@ Public Function Screen(ByVal item As enScreen) As Variant
 ' EXAMPLE: =Screen("pixelsX")
 ' Function Returns #VALUE! for invalid Item
 ' -------------------------------------------------------------------------
+    Const PROC = "Screen"
+    
     Dim xHSizeSq        As Double
     Dim xVSizeSq        As Double
     Dim xPix            As Double
@@ -1166,17 +1170,17 @@ Public Function Screen(ByVal item As enScreen) As Variant
         hWnd = GetActiveWindow()
         hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONULL)
         If hMonitor = 0 Then
-            Debug.Print "ActiveWindow does not intersect a monitor"
+            Debug.Print ErrSrc(PROC) & ": " & "ActiveWindow does not intersect a monitor"
             hWnd = 0
         Else
             tMonitorInfo.cbSize = Len(tMonitorInfo)
             If GetMonitorInfo(hMonitor, tMonitorInfo) = False Then
-                Debug.Print "GetMonitorInfo failed"
+                Debug.Print ErrSrc(PROC) & ": " & "GetMonitorInfo failed"
                 hWnd = 0
             Else
                 hDC = CreateDC(tMonitorInfo.szDevice, 0, 0, 0)
                 If hDC = 0 Then
-                    Debug.Print "CreateDC failed"
+                    Debug.Print ErrSrc(PROC) & ": " & "CreateDC failed"
                     hWnd = 0
                 End If
             End If
@@ -1187,7 +1191,7 @@ Public Function Screen(ByVal item As enScreen) As Variant
         tMonitorInfo.dwFlags = MONITOR_PRIMARY
         tMonitorInfo.szDevice = "PRIMARY" & vbNullChar
     End If
-    Select Case item
+    Select Case Item
         Case enAdjustmentfactor:    xHSizeSq = GetDeviceCaps(hDC, DevCap.HORZSIZE) ^ 2
                                     xVSizeSq = GetDeviceCaps(hDC, DevCap.VERTSIZE) ^ 2
                                     xPix = GetDeviceCaps(hDC, DevCap.HORZRES) ^ 2 + GetDeviceCaps(hDC, DevCap.VERTRES) ^ 2
@@ -1288,9 +1292,10 @@ Private Function StackPop(ByVal stck As Collection) As Variant
     Const PROC = "StckPop"
     
     On Error GoTo eh
+    Dim sName As String
     If StackIsEmpty(stck) Then GoTo xt
     
-    If IsObject(stck(stck.Count)) _
+    If IsObject(stck(stck.Count), sName) _
     Then Set StackPop = stck(stck.Count) _
     Else StackPop = stck(stck.Count)
     stck.Remove stck.Count
@@ -1331,6 +1336,124 @@ xt: Exit Function
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
+Private Function TempFile(Optional ByVal f_path As String = vbNullString, _
+                          Optional ByVal f_extension As String = ".txt") As String
+' ------------------------------------------------------------------------------
+' Returns the full file name of a temporary randomly named file. When a path
+' (f_path) is omitted in the CurDir path, else in at the provided folder.
+' ------------------------------------------------------------------------------
+    Dim sTemp   As String
+    
+    If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
+    sTemp = Replace(FSo.GetTempName, ".tmp", f_extension)
+    If f_path = vbNullString Then f_path = CurDir
+    sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
+    TempFile = sTemp
+    
+End Function
+
+Private Function CollectionAsFile(ByVal v_items As Collection, _
+                        Optional ByRef v_file_name As String = vbNullString, _
+                        Optional ByVal v_file_append As Boolean = False) As File
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+
+    If v_file_name = vbNullString Then v_file_name = TempFile
+    StringAsFile CollectionAsString(v_items), v_file_name, v_file_append
+    Set CollectionAsFile = FSo.GetFile(v_file_name)
+
+End Function
+
+Private Function StringAsFile(ByVal s_strng As String, _
+                     Optional ByRef s_file As Variant = vbNullString, _
+                     Optional ByVal s_file_append As Boolean = False) As File
+' ----------------------------------------------------------------------------
+' Writes a string (s_strng) to a file (s_file) which might be a file object or
+' a file's full name. When no file (s_file) is provided, a temporary file is
+' returned.
+' Note 1: Only when the string has sub-strings delimited by vbCrLf the string
+'         is written a records/lines.
+' Note 2: When the string has the alternate split indicator "|&|" this one is
+'         replaced by vbCrLf.
+' Note when copied: Originates in mVarTrans
+'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
+' ----------------------------------------------------------------------------
+    
+    Select Case True
+        Case s_file = vbNullString: s_file = TempFile
+        Case TypeName(s_file) = "File": s_file = s_file.Path
+    End Select
+    
+    If s_file_append _
+    Then Open s_file For Append As #1 _
+    Else Open s_file For Output As #1
+    Print #1, s_strng
+    Close #1
+    Set StringAsFile = FSo.GetFile(s_file)
+    
+End Function
+
+Private Function IsObject(ByVal i_var As Variant, _
+                          ByRef i_name As String) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE and the object's (i_var) name (i_name) when a variant (i_var)
+' is an object. When the object does not have a Name property an error is
+' raised.
+' ----------------------------------------------------------------------------
+    Const PROC = "IsObject"
+    
+    If Not VBA.IsObject(i_var) Then Exit Function
+    IsObject = True
+    On Error Resume Next
+    i_name = i_var.Name
+    If Err.Number <> 0 _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), _
+         "A function tried to use the Name property of an object when it is to be " & _
+         "transferred into a string which is the case when String, Array, or File " & _
+         "is the target format. However, the current item is an object which does " & _
+         "not have a Name property!"
+    
+End Function
+
+Private Function CollectionAsString(ByVal c_coll As Collection, _
+                           Optional ByRef c_split As String = vbNullString) As String
+' ----------------------------------------------------------------------------
+' Returns a collection's (c_coll) items as string with the items delimited
+' by a vbCrLf. Itmes are converted into a string, if an item is an object its
+' Name property is used (an error is raised when the object has no Name
+' property.
+' Note when copied: Originates in mVarTrans
+'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
+' ----------------------------------------------------------------------------
+    Const PROC = "CollectionAsString"
+    
+    Dim s       As String
+    Dim sName   As String
+    Dim sSplit  As String
+    Dim v       As Variant
+    Dim v2      As Variant
+    
+    If c_split = vbNullString Then c_split = vbCrLf
+    For Each v In c_coll
+        Select Case True
+            Case IsObject(v, sName)
+                s = s & sSplit & sName
+                sSplit = c_split
+            Case TypeName(v) Like "*()"
+                For Each v2 In v
+                    s = s & sSplit & CStr(v2)
+                    sSplit = c_split
+                Next v2
+            Case Else
+                s = s & sSplit & v
+                sSplit = c_split
+        End Select
+    Next v
+    CollectionAsString = s
+
+End Function
+
 Private Sub StckPush(ByRef stck As Collection, _
                      ByVal stck_item As Variant)
 ' ----------------------------------------------------------------------------
@@ -1342,6 +1465,16 @@ Private Sub StckPush(ByRef stck As Collection, _
     On Error GoTo eh
     If stck Is Nothing Then Set stck = New Collection
     stck.Add stck_item
+    If stck.Count >= 15 Then
+        Select Case MsgBox("Loop warning!" & vbLf & _
+                           "Yes: Display stack" & vbLf & _
+                           "No: Continue" & vbLf & _
+                           "Cancel: Terminate process", vbYesNoCancel, "Loop warning!")
+            Case vbYes:     ShellRun CollectionAsFile(stck, TempFile).Path, WIN_NORMAL
+            Case vbNo:
+            Case vbCancel: Stop
+        End Select
+    End If
 
 xt: Exit Sub
 

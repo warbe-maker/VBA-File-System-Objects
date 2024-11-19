@@ -1,31 +1,28 @@
 Attribute VB_Name = "mCompManClient"
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module mCompManClient: CompMan client interface. The component is
-' =============================== to be imported into any Workbook/VB-Project
-' for being serviced by CompMan's Export Changed Components, Update
-' Outdated Common Components, or the Synchronize VB-Projects service.
+' Standard Module mCompManClient: InterfaceCompMan services (Export Changed
+' =============================== Components, Update Outdated CommonComponents,
+' or the Synchronize VB-Projects). To be imported into any VBProject for
+' making use of one or more services.
 '
-' W. Rauschenberger, Berlin Dec 2023
-'
+' W. Rauschenberger, Berlin Jul 2024
 ' See https://github.com/warbe-maker/VB-Components-Management
 ' ----------------------------------------------------------------------------
-' --- The below constants must not be changed to Private since they are used byCompMan
-Private Const COMPMAN_ADDIN             As String = "CompMan.xlam"
-Private Const vbResume                  As Long = 6 ' return value (equates to vbYes)
-
 Public Const COMPMAN_DEVLP              As String = "CompMan.xlsb"
 Public Const SRVC_EXPORT_ALL            As String = "ExportAll"
 Public Const SRVC_EXPORT_ALL_DSPLY      As String = "Export All Components"
 Public Const SRVC_EXPORT_CHANGED        As String = "ExportChangedComponents"
 Public Const SRVC_EXPORT_CHANGED_DSPLY  As String = "Export Changed Components"
+Public Const SRVC_RELEASE_PENDING       As String = "ReleaseService"
+Public Const SRVC_RELEASE_PENDING_DSPLY As String = "Release pending changes"
 Public Const SRVC_SYNCHRONIZE           As String = "SynchronizeVBProjects"
 Public Const SRVC_SYNCHRONIZE_DSPLY     As String = "Synchronize VB-Projects"
 Public Const SRVC_UPDATE_OUTDATED       As String = "UpdateOutdatedCommonComponents"
 Public Const SRVC_UPDATE_OUTDATED_DSPLY As String = "Update Outdated Common Components"
-Public Const SRVC_RELEASE_PENDING_CHANGES_DSPLY As String = "Release pending changes"
-Public Const SRVC_RELEASE_PENDING_CHANGES   As String = "ReleaseService"
 
+Private Const COMPMAN_ADDIN             As String = "CompMan.xlam"
+Private Const vbResume                  As Long = 6 ' return value (equates to vbYes)
 Private Busy                            As Boolean ' prevent parallel execution of a service
 Private sEventsLvl                      As String
 Private bWbkExecChange                  As Boolean
@@ -65,14 +62,6 @@ Const ERR_EXISTS_GOW04 = "The Workbook (parameter vWb) is a Workbook object not/
 Const ERR_EXISTS_GOW05 = "The Workbook (parameter vWb) is neither a Workbook object nor a string (name or fullname)!"
 Const ERR_EXISTS_GOW06 = "A Workbook file named '<>' (parameter vWb) does not exist!"
 
-Public Property Get ServiceName(Optional ByVal s As String) As String
-    Select Case s
-        Case SRVC_EXPORT_CHANGED:   ServiceName = SRVC_EXPORT_CHANGED_DSPLY
-        Case SRVC_SYNCHRONIZE:      ServiceName = SRVC_SYNCHRONIZE_DSPLY
-        Case SRVC_UPDATE_OUTDATED:  ServiceName = SRVC_UPDATE_OUTDATED_DSPLY
-    End Select
-End Property
-
 Private Property Let DisplayedServiceStatus(ByVal s As String)
     With Application
         .StatusBar = vbNullString
@@ -88,48 +77,28 @@ Public Property Get IsDevInstance() As Boolean
     IsDevInstance = ThisWorkbook.Name = mCompManClient.COMPMAN_DEVLP
 End Property
 
+Public Property Get ServiceName(Optional ByVal s As String) As String
+    Select Case s
+        Case SRVC_EXPORT_CHANGED:   ServiceName = SRVC_EXPORT_CHANGED_DSPLY
+        Case SRVC_SYNCHRONIZE:      ServiceName = SRVC_SYNCHRONIZE_DSPLY
+        Case SRVC_UPDATE_OUTDATED:  ServiceName = SRVC_UPDATE_OUTDATED_DSPLY
+    End Select
+End Property
+
 Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
-' Ensures that a programmed (i.e. an application) error numbers never conflicts
-' with the number of a VB runtime error. Thr function returns a given positive
-' number (app_err_no) with the vbObjectError added - which turns it into a
-' negative value. When the provided number is negative it returns the original
-' positive "application" error number e.g. for being used with an error message.
+' Ensures that a programmed (i.e. an application) error number never conflicts
+' with VB runtime error. Thr function returns a given positive number
+' (app_err_no) with the vbObjectError added - which turns it to negative. When
+' the provided number is negative it returns the original positive "application"
+' error number e.g. for being used with an error message.
 ' ------------------------------------------------------------------------------
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
-'#If Win64 Then
-    Private Function checkHwnds(ByRef xlApps() As Application, hWnd As LongPtr) As Boolean
-'#Else
-'    Private Function checkHwnds(ByRef xlApps() As Application, hWnd As Long) As Boolean
-'#End If
-' -----------------------------------------------------------------------------------------
-'
-' -----------------------------------------------------------------------------------------
-    Const PROC = "checkHwnds"
-
-    On Error GoTo eh
-    Dim i       As Long
-    
-    If UBound(xlApps) = 0 Then GoTo xt
-
-    For i = LBound(xlApps) To UBound(xlApps)
-        If xlApps(i).hWnd = hWnd Then
-            checkHwnds = False
-            GoTo xt
-        End If
-    Next i
-
-    checkHwnds = True
-    
-xt: Exit Function
-    
-eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
-End Function
-
 Public Sub CompManService(ByVal c_service_proc As String, _
-                 Optional ByVal c_hosted_common_components As String = vbNullString)
+                 Optional ByVal c_hosted_common_components As String = vbNullString, _
+                 Optional ByVal c_public_procedure_copies As String = vbNullString)
 ' ----------------------------------------------------------------------------
 ' Execution of the CompMan service (c_service_proc) preferably via the "CompMan
 ' Development Instance" as the servicing Workbook. Only when not available the
@@ -173,7 +142,7 @@ Public Sub CompManService(ByVal c_service_proc As String, _
                , p_by_servicing_wbk_name:=sServicingWbkName
         If c_service_proc = mCompManClient.SRVC_SYNCHRONIZE _
         Then Application.Run sServicingWbkName & "!mCompMan." & mCompManClient.SRVC_SYNCHRONIZE, ThisWorkbook _
-        Else Application.Run sServicingWbkName & "!mCompMan." & c_service_proc, ThisWorkbook, c_hosted_common_components
+        Else Application.Run sServicingWbkName & "!mCompMan." & c_service_proc, ThisWorkbook, c_hosted_common_components, c_public_procedure_copies
     Else
         Progress p_service_name:=ServiceName(c_service_proc) _
                , p_serviced_wbk_name:=ThisWorkbook.Name _
@@ -314,7 +283,7 @@ Public Sub Events(ByVal e_src As String, _
     
     If Not e_b Then
         EventsApp False
-        Debug.Print sEventsLvl & ">> " & ThisWorkbook.Name & "." & e_src & " (Application.EnableEvents = False)"
+        Debug.Print ErrSrc(PROC) & ": " & sEventsLvl & ">> " & ThisWorkbook.Name & "." & e_src & " (Application.EnableEvents = False)"
         If sLastExecWrkbk <> vbNullString And ThisWorkbook.Name <> sLastExecWrkbk And Not bWbkExecChange Then
             bWbkExecChange = True
             sEventsLvl = sEventsLvl & "   "
@@ -325,7 +294,7 @@ Public Sub Events(ByVal e_src As String, _
         sEventsLvl = Left(sEventsLvl, Len(sEventsLvl) - 3)
         sLastExecWrkbk = ThisWorkbook.Name
         EventsApp True
-        Debug.Print sEventsLvl & "<< " & ThisWorkbook.Name & "." & e_src & " (Application.EnableEvents = True)"
+        Debug.Print ErrSrc(PROC) & ": " & sEventsLvl & "<< " & ThisWorkbook.Name & "." & e_src & " (Application.EnableEvents = True)"
     End If
 
     If sEventsLvl = vbNullString Then
@@ -443,18 +412,15 @@ Public Sub Progress(ByVal p_service_name As String, _
            Optional ByVal p_no_comps_skipped As Long = 0, _
            Optional ByVal p_service_info As String = vbNullString)
 ' --------------------------------------------------------------------------
-' Universal message of the export and the update service's progress in the
-' form:
-' <service> (by <by>) for <serviced>: <n> of <m> <op> [(component [, component] ..]
-' <n> = Number of objects the service has been provided for (p_items_serviced)
-' <m> = Total number of objects to be (ptentially) serviced
-' <op> = The performed operation
+' Progress display in the Application.StatusBar for CompMan services.
+' Form: <service> (by <by>) for <serviced>: <n> of <m> <o> [<c> [, <c>] ..]
+' <n> = Components the service has been provided for (p_items_serviced)
+' <m> = Total number of components being serviced
+' <o> = The performed operation
+' <c> = Components processed, e.g. exported
 ' Whereby the progress is indicated in two ways: an increasing number of
 ' dots for the items collected for being serviced and a decreasing number
 ' of dots indication the items already serviced.
-'
-' Example:
-' Export ... (by CompMan....) for ......: 1 of 50 exported (clsServices)
 ' --------------------------------------------------------------------------
     Const PROC                  As String = "Progress"
     Const SRVC_PROGRESS_SCHEME  As String = "<srvc> <by> <serviced>: <n> of <m> <op> <info> <dots>"
@@ -480,9 +446,11 @@ Public Sub Progress(ByVal p_service_name As String, _
         sMsg = Replace(sMsg, "<dots>", vbNullString)
     End If
     
-    If p_service_op <> vbNullString _
-    Then sMsg = Replace(sMsg, "<op>", p_service_op) _
-    Else sMsg = Replace(sMsg, "<op>", "please wait!")
+    If p_service_op <> vbNullString Then
+        sMsg = Replace(sMsg, "<op>", p_service_op)
+    Else
+        sMsg = Replace(sMsg, "<op>", "Service initiating")
+    End If
     
     If p_progress_figures Then
         sMsg = Replace(sMsg, "<n>", Format(p_no_comps_serviced, sFormat))
@@ -528,29 +496,34 @@ Private Function ServicingWbkName(ByVal s_service_proc As String) As String
     
     Dim ServicedByAddinResult           As Long
     Dim ServicedByWrkbkResult           As Long
-    Dim ServiceAvailableByAddin         As Boolean
-    Dim ServiceAvailableByCompMan       As Boolean
+    Dim ServiceAvailableByAddIn         As Boolean
+    Dim ServiceAvailableByDevInstance   As Boolean
     Dim ResultRequiredAddinNotAvailable As Long
     Dim ResultConfigInvalid             As Long
     Dim ResultOutsideCfgFolder          As Long
     Dim ResultRequiredDevInstncNotOpen  As Long
+    Dim ResultServiceByAddinIsPaused    As Long
     
-    ResultConfigInvalid = AppErr(1)              ' Configuration for the service is invalid
-    ResultOutsideCfgFolder = AppErr(2)           ' Outside the for the service required folder
-    ResultRequiredAddinNotAvailable = AppErr(3)  ' Required Addin for DevInstance update paused or not open
-    ResultRequiredDevInstncNotOpen = AppErr(4) '
+    ResultConfigInvalid = AppErr(1)             ' Configuration for the service is invalid
+    ResultOutsideCfgFolder = AppErr(2)          ' Outside the for the service required folder
+    ResultRequiredAddinNotAvailable = AppErr(3) ' Required Addin for DevInstance update paused or not open
+    ResultRequiredDevInstncNotOpen = AppErr(4)  '
+    ResultServiceByAddinIsPaused = AppErr(5)
     
     '~~ Availability check CompMan Add-in
     On Error Resume Next
     ServicedByAddinResult = Application.Run(COMPMAN_ADDIN & "!mCompMan.RunTest", s_service_proc, ThisWorkbook)
-    ServiceAvailableByAddin = Err.Number = 0
+    ServiceAvailableByAddIn = Err.Number = 0
     '~~ Availability check CompMan Workbook
     On Error Resume Next
     ServicedByWrkbkResult = Application.Run(COMPMAN_DEVLP & "!mCompMan.RunTest", s_service_proc, ThisWorkbook)
-    ServiceAvailableByCompMan = Err.Number = 0
+    ServiceAvailableByDevInstance = Err.Number = 0
     
     Select Case True
         '~~ Display/indicate why the service cannot be provided
+        Case ServicedByAddinResult = ResultServiceByAddinIsPaused _
+         And ResultRequiredDevInstncNotOpen = AppErr(4)
+            DisplayedServiceStatus = "The service has been denied because the AddIn is paused!"
         Case ServicedByWrkbkResult = ResultConfigInvalid
             Select Case s_service_proc
                 Case SRVC_SYNCHRONIZE:      DisplayedServiceStatus = vbNullString ' "'" & SRVC_SYNCHRONIZE_DSPLY & "' service denied (no Sync-Target- and or Sync-Archive-Folder configured)!"
@@ -562,10 +535,10 @@ Private Function ServicingWbkName(ByVal s_service_proc As String) As String
                    , p_serviced_wbk_name:=ThisWorkbook.Name _
                    , p_service_info:="Service not applicable"
             Select Case s_service_proc
-                Case SRVC_SYNCHRONIZE:      Debug.Print "The enabled/requested '" & SRVC_SYNCHRONIZE_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Sync-Target-Folder')"
-                Case SRVC_UPDATE_OUTDATED:  Debug.Print "The enabled/requested '" & SRVC_EXPORT_CHANGED_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Dev-and-Test-Folder')"
+                Case SRVC_SYNCHRONIZE:      Debug.Print ErrSrc(PROC) & ": " & "The enabled/requested '" & SRVC_SYNCHRONIZE_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Sync-Target-Folder')"
+                Case SRVC_UPDATE_OUTDATED:  Debug.Print ErrSrc(PROC) & ": " & "The enabled/requested '" & SRVC_EXPORT_CHANGED_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Dev-and-Test-Folder')"
                 Case SRVC_EXPORT_CHANGED
-                    Debug.Print "The enabled/requested '" & SRVC_UPDATE_OUTDATED_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Dev-and-Test-Folder')"
+                    Debug.Print ErrSrc(PROC) & ": " & "The enabled/requested '" & SRVC_UPDATE_OUTDATED_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Dev-and-Test-Folder')"
             End Select
         Case ServicedByWrkbkResult = ResultRequiredAddinNotAvailable
             DisplayedServiceStatus = "The required Add-in is not available for the 'Update' service for the Development-Instance!"
@@ -573,15 +546,31 @@ Private Function ServicingWbkName(ByVal s_service_proc As String) As String
             DisplayedServiceStatus = mCompManClient.COMPMAN_DEVLP & " is the Workbook reqired for the " & SRVC_SYNCHRONIZE & " but it is not open!"
         
         '~~ When neither of the above is True the servicing Workbook instance is decided
-        Case IsDevInstance And s_service_proc = SRVC_UPDATE_OUTDATED And ServiceAvailableByAddin:   ServicingWbkName = COMPMAN_ADDIN
-        Case Not IsDevInstance And ServiceAvailableByCompMan:                                       ServicingWbkName = COMPMAN_DEVLP
-        Case Not IsDevInstance And Not ServiceAvailableByCompMan And ServiceAvailableByAddin:       ServicingWbkName = COMPMAN_ADDIN
-        Case Not ServiceAvailableByCompMan And ServiceAvailableByAddin:                             ServicingWbkName = COMPMAN_ADDIN
-        Case ServiceAvailableByCompMan And Not ServiceAvailableByAddin:                             ServicingWbkName = COMPMAN_DEVLP
-        Case ServiceAvailableByCompMan And ServiceAvailableByAddin:                                 ServicingWbkName = COMPMAN_DEVLP
+        Case IsDevInstance _
+         And s_service_proc = SRVC_UPDATE_OUTDATED _
+         And ServiceAvailableByAddIn
+            '~~ The development instance's outdated Common Components can only be updated
+            '~~ by an available (open and not paused) Addin instance
+                                                ServicingWbkName = COMPMAN_ADDIN
+        Case Not IsDevInstance _
+         And ServiceAvailableByDevInstance
+                                                ServicingWbkName = COMPMAN_DEVLP
+        Case Not IsDevInstance _
+         And Not ServiceAvailableByDevInstance _
+         And ServiceAvailableByAddIn
+                                                ServicingWbkName = COMPMAN_ADDIN
+        Case Not ServiceAvailableByDevInstance _
+         And ServiceAvailableByAddIn
+                                                ServicingWbkName = COMPMAN_ADDIN
+        Case ServiceAvailableByDevInstance _
+         And Not ServiceAvailableByAddIn
+                                                ServicingWbkName = COMPMAN_DEVLP
+        Case ServiceAvailableByDevInstance _
+         And ServiceAvailableByAddIn
+                                                ServicingWbkName = COMPMAN_DEVLP
         Case Else
             '~~ Silent service denial
-            Debug.Print "CompMan services are not available, neither by open Workbook nor by CompMan Add-in!"
+            Debug.Print ErrSrc(PROC) & ": " & "CompMan services are not available because neither CompMan.xlsb nor the CompMan Add-in is open!"
     End Select
         
 xt: Exit Function

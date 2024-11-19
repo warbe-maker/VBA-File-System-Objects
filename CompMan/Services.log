@@ -1,0 +1,48 @@
+24-08-03-23:59:07 ------------------- Export Changed Components (by CompMan.xlsb) for Fso.xlsb -------------------
+24-08-03-23:59:07 ------------------------------------------------------------------------------------------------
+24-08-03-23:59:07  Standard-Module  mFso...........:  Modified Common Component: Release registered pending       
+24-08-03-23:59:07  Class-Module     clsTestAid.....:  Modified Common Component: Release registered pending       
+24-10-10-13:16:39 ================================================================================================
+24-10-10-13:16:39 --------------- Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb ---------------
+24-10-10-13:16:39 ------------------------------------------------------------------------------------------------
+24-10-10-13:16:39  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:16:39  Standard-Module  mFso...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:16:39  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:16:39  Standard-Module  mDct...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:16:40  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:16:44  Standard-Module  mMsg...........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-10-13:16:47  Standard-Module  mCompManClient.:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-10-13:16:50  Class-Module     clsTestAid.....:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-10-13:16:53  Class-Module     clsLog.........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-10-13:30:51 ================================================================================================
+24-10-10-13:30:51 --------------- Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb ---------------
+24-10-10-13:30:51 ------------------------------------------------------------------------------------------------
+24-10-10-13:30:51  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  Standard-Module  mFso...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  Standard-Module  mDct...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  Standard-Module  mMsg...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:51  Class-Module     clsTestAid.....:  Serviced Common Component used is up-to-date                
+24-10-10-13:30:52  Class-Module     clsLog.........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:58 ================================================================================================
+24-10-10-13:31:58 --------------- Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb ---------------
+24-10-10-13:31:58 ------------------------------------------------------------------------------------------------
+24-10-10-13:31:58  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:58  Standard-Module  mFso...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:59  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:59  Standard-Module  mDct...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:59  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:59  Standard-Module  mMsg...........:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:59  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                
+24-10-10-13:31:59  Class-Module     clsLog.........:  Serviced Common Component used is up-to-date                
+24-10-10-13:32:03  Class-Module     clsTestAid.....:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-10-15:35:31 ================================================================================================
+24-10-10-15:35:31 ------------------- Export Changed Components (by CompMan.xlsb) for Fso.xlsb -------------------
+24-10-10-15:35:31 ------------------------------------------------------------------------------------------------
+24-10-10-15:35:31  Standard-Module  mFsoTest.......:  Modified VBComponent e x p o r t e d !                      
+24-10-10-15:35:32  Class-Module     clsTestAid.....:  Modified Common Component: Release registered pending       
+24-10-10-15:35:32                                     Serviced Common Component modified: E x p o r t e d !       
+24-10-10-15:35:32                                     Serviced Common Component modified: Properties in CommComps.dat updated
+24-10-10-15:35:32                                     Serviced Common Component modified: Registered pending release         

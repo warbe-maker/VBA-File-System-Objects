@@ -1,0 +1,26 @@
+-----------------------------+--------+-----------+-----------+---------------------+------------------------------------------------+----------+-------------
+            Test             |  Test  | Component | Component |      Procedure      |                  Verification                  |   Test   |  Exec time  
+            Title            |   Id   |   Name    |   Type    |        Name         |            (expected/tested result)            |  Result  |   (msec)    
+-----------------------------+--------+-----------+-----------+---------------------+------------------------------------------------+----------+-------------
+ FileTemp service            | 01-1.1 | mFso      | Function  | FileTemp            | Returns a randomly named temporary file        |  Passed  |      0,0081 
+ Exists service              | 02-1.1 | mFso      | Function  | Exists              | Folder not exists                              |  Passed  | n/a         
+                             | 02-2.1 | mFso      | Function  | Exists              | Folder exists                                  |  Passed  | n/a         
+ Exists service              | 02-3.1 | mFso      | Function  | Exists              | File not exists                                |  Passed  | n/a         
+                             | 02-4.1 | mFso      | Function  | Exists              | File exists                                    |  Passed  | n/a         
+ Exists service              | 02-5.1 | mFso      | Function  | Exists              | File by wildcard                               |  Passed  | n/a         
+                             | 02-6.1 | mFso      | Function  | Exists              | File by wildcard in sub-folders                |  Passed  | n/a         
+ Exists service              | 02-6.2 | mFso      | Function  | Exists              | File by wildcard in sub-folders                |  Passed  | n/a         
+                             | 02-6.3 | mFso      | Function  | Exists              | File by wildcard in sub-folders                |  Passed  | n/a         
+ FilePicked service          | 04-1.1 | mFso      | Function  | FilePicked          | ThisWorkbook is picked                         |  Passed  | n/a         
+                             | 04-2.1 | mFso      | Function  | FilePicked          | No file picked                                 |  Passed  | n/a         
+ FileString service          | 05-1.1 | mFso      | Property  | FileString          | Write/read one recod                           |  Passed  | n/a         
+                             | 05-3.1 | mFso      | Property  | FileString          | Append                                         |  Passed  | n/a         
+ FileString service          | 05-4.1 | mFso      | Property  | FileString          | Write with append and read with file as object |  Passed  | n/a         
+ FileDiffersFromFile service | 06-1.1 | mFso      | Property  | FileDiffersFromFile | Differs = False                                |  Passed  | n/a         
+                             | 06-2.1 | mFso      | Property  | FileDiffersFromFile | Differs = True                                 |  Passed  | n/a         
+ FileDiffersFromFile service | 06-3.1 | mFso      | Property  | FileDiffersFromFile | Differs = True                                 |  Passed  | n/a         
+                             | 06-4.1 | mFso      | Property  | FileDiffersFromFile | Differs = True                                 |  Passed  | n/a         
+ FileArry service            | 08-1.1 | mFso      | Property  | FileArry-Get        | Get file content as array                      |  Passed  | n/a         
+                             | 08-2.1 | mFso      | Property  | FileArry-Let        | Write file from array                          |  Passed  |      0,5879 
+ FileArry service            | 08-2.2 | mFso      | Property  | FileArry-Get        | Read file to array exclude empty false         |  Passed  | n/a         
+                             | 08-2.3 | mFso      | Property  | FileArry-Get        | Read file to array exclude empty true          |  Passed  | n/a         

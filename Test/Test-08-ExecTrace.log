@@ -1,0 +1,7 @@
+24-10-10 16:56:36 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-10-10 16:56:36 seconds seconds >> Begin execution trace 
+24-10-10 16:56:36 00,0000         |  >> mFsoTest.Test_08_FileArry_Get_Let
+24-10-10 16:58:37 117,6482 117,6482 |  << mFsoTest.Test_08_FileArry_Get_Let (Application Error 1 )
+24-10-10 16:58:37 117,6482 117,6482 << End execution trace 
+24-10-10 16:58:37                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-10-10 16:58:37                 Impact on the overall performance (caused by the trace itself): 1,1 milliseconds!

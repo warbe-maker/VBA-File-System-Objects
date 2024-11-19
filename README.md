@@ -203,7 +203,7 @@ An existing folder is additionally returned as folder object (argument _ex\_resu
 ## Contribution
 Any kind of contribution is welcome. Respecting the (more or less obvious) coding principles will be appreciated. The module is available in a [Workbook][4] (public GitHub repository) which includes a complete regression test of all services.
 
-[1]:https://gitcdn.link/cdn/warbe-maker/Common-VBA-File-Services/master/source/mFso.bas
+[1]:https://gitcdn.link/cdn/warbe-maker/Common-VBA-File-Services/master/CompMan/source/mFso.bas
 [2]:https://gitcdn.link/cdn/warbe-maker/Common-VBA-Directory-Services/master/source/mDct.bas
 [3]:https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
 [4]:https://github.com/warbe-maker/Common-VBA-File-Sytem-Objects-Services
