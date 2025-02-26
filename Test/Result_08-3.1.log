@@ -1,9 +1,0 @@
- 24-04-13-14 ===============================================================================
-  Test Result details: 08-3.1 Property mFso.FileArry-Get: Read file to array (empty excluded) 
- -------------------------------------------------------------------------------------------
- |  P/F   | Result | Result Expected 
- +--------+--------+------------------------------------------------------------------------
- | Failed | xxx    | xxxx
- | Failed |        | yyyy
- | Failed |        | nothing!
- | Failed | yyy    | nothing!

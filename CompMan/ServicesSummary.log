@@ -1,96 +1,70 @@
-24-08-03-23:38:51 ------------------------------------------------ Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb -------------------------------------------------
-24-08-03-23:38:51 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-08-03-23:38:51  Standard-Module  mTrc_RnmdByCom  Component is up-to-date! Revision-Number has been set to to 2024-08-03 09:40:40 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:38:51                                   Used Common Component is up-to-date                         
-24-08-03-23:38:51  Standard-Module  mMsg_RnmdByCom  Component is up-to-date! Revision-Number has been set to to 2024-08-03 19:04:42 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:38:51                                   Used Common Component is up-to-date                         
-24-08-03-23:40:47 ===================================================================================================================================================================
-24-08-03-23:40:47 ------------------------------------------------ Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb -------------------------------------------------
-24-08-03-23:40:47 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-08-03-23:40:47  Standard-Module  mTrc            Component is up-to-date! Revision-Number has been set to to 2024-08-03 09:40:40 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:47                                   Used Common Component is up-to-date                         
-24-08-03-23:40:48  Standard-Module  mMsg            Component is up-to-date! Revision-Number has been set to to 2024-08-03 19:04:42 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:48                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  Standard-Module  mFso            Component is up-to-date! Revision-Number has been set to to 2024-08-01 12:23:23 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  Standard-Module  mErH            Component is up-to-date! Revision-Number has been set to to 2024-08-02 14:11:11 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  Standard-Module  mDct            Component is up-to-date! Revision-Number has been set to to 2024-08-01 12:23:24 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  UserForm         fMsg            Component is up-to-date! Revision-Number has been set to to 2024-08-01 12:23:24 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  Standard-Module  mCompManClient  Component is up-to-date! Revision-Number has been set to to 2024-08-01 12:23:22 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  Class-Module     clsTestAid      Component is up-to-date! Revision-Number has been set to to 2024-08-03 20:33:07 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54  Class-Module     clsLog          Component is up-to-date! Revision-Number has been set to to 2024-08-02 20:46:37 (UTC) (the raw's in the Common Components Folder)
-24-08-03-23:40:54                                   Used Common Component is up-to-date                         
-24-08-03-23:40:54 UpdateOutdatedCommonComponents (by CompMan.xlsb) for Fso.xlsb: 0 of 9 outdated  (see Services.log for log details)
-24-08-03-23:41:05 ============================================================================================================
-24-08-03-23:41:05 ------------------------- Export Changed Components (by CompMan.xlsb) for Fso.xlsb -------------------------
-24-08-03-23:41:05 ------------------------------------------------------------------------------------------------------------
-24-08-03-23:41:05 ExportChangedComponents (by CompMan.xlsb) for Fso.xlsb: 0 of 12 exported  (see Services.log for log details)
-24-08-03-23:58:54 ==============================================================================================
-24-08-03-23:58:54 ------------------ Export Changed Components (by CompMan.xlsb) for Fso.xlsb ------------------
-24-08-03-23:58:54 ----------------------------------------------------------------------------------------------
-24-08-03-23:58:54  Standard-Module  mFsoTest        Code differs from last export or no Export-File!            
-24-08-03-23:58:54                                   Modified VBComponent e x p o r t e d !                      
-24-08-03-23:58:55  Standard-Module  mFso            Code differs from last export or no Export-File!            
-24-08-03-23:58:55                                   Modified Common Component: e x p o r t e d !                
-24-08-03-23:58:55                                   Modified Common Component: Last modification info changed from "2024-08-01 12:23:23 (UTC)" to "2024-08-03 21:58:55 (UTC)"
-24-08-03-23:58:55  Class-Module     clsTestAid      Code differs from last export or no Export-File!            
-24-08-03-23:58:56                                   Modified Common Component: e x p o r t e d !                
-24-08-03-23:58:56                                   Modified Common Component: Last modification info changed from "2024-08-03 20:33:07 (UTC)" to "2024-08-03 21:58:55 (UTC)"
-24-08-03-23:58:56 ExportChangedComponents (by CompMan.xlsb) for Fso.xlsb: 3 of 12 exported (mFsoTest, mFso, clsTestAid)  (see Services.log for log details)
-24-08-03-23:59:07 ================================================================================================
-24-08-03-23:59:07  Standard-Module  mFso...........:  Modified Common Component: Release registered pending       
-24-08-03-23:59:07  Class-Module     clsTestAid.....:  Modified Common Component: Release registered pending       
-24-08-03-23:59:08 =====================================================================================================================================================================
-24-08-03-23:59:08 ----------------------------------------------------- Export Changed Components (by CompMan.xlsb) for Fso.xlsb ------------------------------------------------------
-24-08-03-23:59:08 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-08-03-23:59:08 ExportChangedComponents (by CompMan.xlsb) for Fso.xlsb: 0 of 12 exported, 2 Common Component modifications still pending release!  (see Services.log for log details)
-24-10-10-13:16:39 ==============================================================================================
-24-10-10-13:16:39 -------------- Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb --------------
-24-10-10-13:16:39 ----------------------------------------------------------------------------------------------
-24-10-10-13:16:39  Standard-Module  mTrc            Serviced Common Component used is up-to-date                
-24-10-10-13:16:39  Standard-Module  mFso            Serviced Common Component used is up-to-date                
-24-10-10-13:16:39  Standard-Module  mErH            Serviced Common Component used is up-to-date                
-24-10-10-13:16:39  Standard-Module  mDct            Serviced Common Component used is up-to-date                
-24-10-10-13:16:40  UserForm         fMsg            Serviced Common Component used is up-to-date                
-24-10-10-13:16:44  Standard-Module  mMsg            Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-10-13:16:47  Standard-Module  mCompManClient  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-10-13:16:50  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-10-13:16:53  Class-Module     clsLog          Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-10-13:30:51 ==============================================================================================
-24-10-10-13:30:51 -------------- Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb --------------
-24-10-10-13:30:51 ----------------------------------------------------------------------------------------------
-24-10-10-13:30:51  Standard-Module  mTrc            Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  Standard-Module  mFso            Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  Standard-Module  mErH            Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  Standard-Module  mDct            Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  UserForm         fMsg            Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  Standard-Module  mMsg            Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                
-24-10-10-13:30:51  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                
-24-10-10-13:30:52  Class-Module     clsLog          Serviced Common Component used is up-to-date                
-24-10-10-13:31:58 ==============================================================================================
-24-10-10-13:31:58 -------------- Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb --------------
-24-10-10-13:31:58 ----------------------------------------------------------------------------------------------
-24-10-10-13:31:58  Standard-Module  mTrc            Serviced Common Component used is up-to-date                
-24-10-10-13:31:58  Standard-Module  mFso            Serviced Common Component used is up-to-date                
-24-10-10-13:31:59  Standard-Module  mErH            Serviced Common Component used is up-to-date                
-24-10-10-13:31:59  Standard-Module  mDct            Serviced Common Component used is up-to-date                
-24-10-10-13:31:59  UserForm         fMsg            Serviced Common Component used is up-to-date                
-24-10-10-13:31:59  Standard-Module  mMsg            Serviced Common Component used is up-to-date                
-24-10-10-13:31:59  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                
-24-10-10-13:31:59  Class-Module     clsLog          Serviced Common Component used is up-to-date                
-24-10-10-13:32:03  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-10-15:35:31 ==============================================================================================
-24-10-10-15:35:31 ------------------ Export Changed Components (by CompMan.xlsb) for Fso.xlsb ------------------
-24-10-10-15:35:31 ----------------------------------------------------------------------------------------------
-24-10-10-15:35:31  Standard-Module  mFsoTest        Modified VBComponent e x p o r t e d !                      
-24-10-10-15:35:32  Class-Module     clsTestAid      Modified Common Component: Release registered pending       
-24-10-10-15:35:32                                   Serviced Common Component modified: E x p o r t e d !       
-24-10-10-15:35:32                                   Serviced Common Component modified: Properties in CommComps.dat updated
-24-10-10-15:35:32                                   Serviced Common Component modified: Registered pending release
-24-10-10-15:35:32 ExportChangedComponents (by CompMan.xlsb) for Fso.xlsb: 2 of 12 exported (mFsoTest, clsTestAid)     See the VBE CompMan menu for 1 Common Component is pending release!  (see Services.log for log details)
+25-02-22-23:16:07  Standard-Module  mFsoTest        Modified VBComponent e x p o r t e d !                                            
+25-02-22-23:16:08 ExportChangedComponents (by CompMan.xlam) for Fso.xlsb: 1 of 12 exported (mFsoTest)  (see E:\Sync\Excel VBA\DevAndTest\FSo\CompMan\Services.log for log details)
+25-02-24-08:52:15 =================================================================================================
+25-02-24-08:52:15  Standard-Module  mFso...........:  Serviced Common Component properties housekeeping:           
+25-02-24-08:52:15                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-08:52:15  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-24-08:52:15                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-08:52:15  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
+25-02-24-08:52:15                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-08:52:15 ====================================================================================================================
+25-02-24-08:52:15                                   Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Standard-Module  mErH            Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Standard-Module  mDct            Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  UserForm         fMsg            Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Standard-Module  mMsg            Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Class-Module     clsLog          Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                                      
+25-02-24-08:52:16  Standard-Module  mFso            Serviced Common Component used is up-to-date                                      
+25-02-24-09:00:36 ===============================================================================================
+25-02-24-09:00:36  Standard-Module  mFso            Common Component code change:                                
+25-02-24-09:00:36                                   Line 0319 Serviced (CodeModule)....:         TxtFile(sFile,  
+25-02-24-09:00:36                                   Line 0319 Serviced (Export-File)...:         FileOutput sFil 
+25-02-24-09:00:36                                   Modified Common Component: Release registered pending        
+25-02-24-09:00:36                                   Serviced Common Component modified: E x p o r t e d !        
+25-02-24-09:00:36                                   Serviced Common Component modified: Properties in CommComps. 
+25-02-24-09:00:36                                   Serviced Common Component modified: Registered pending relea 
+25-02-24-09:00:36 ExportChangedComponents (by CompMan.xlam) for Fso.xlsb: 1 of 12 exported (mFso)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\FSo\CompMan\Services.log for log details)
+25-02-24-09:01:24 =============================================================================================================================================================================================================================
+25-02-24-09:01:24 ExportChangedComponents (by CompMan.xlam) for Fso.xlsb: 0 of 12 exported     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\FSo\CompMan\Services.log for log details)
+25-02-24-18:47:04 =================================================================================================
+25-02-24-18:47:04  Standard-Module  mFso...........:  Serviced Common Component properties housekeeping:           
+25-02-24-18:47:04                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-18:47:04  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-24-18:47:04                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-18:47:04  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
+25-02-24-18:47:04                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-18:47:05 ====================================================================================================================
+25-02-24-18:47:05                                   Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  Standard-Module  mErH            Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  Standard-Module  mDct            Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  UserForm         fMsg            Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  Standard-Module  mMsg            Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  Class-Module     clsLog          Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:05  Class-Module     clsTestAid      Code difference Line 0027 Serviced (CodeModule)..........................: ' Excl 
+25-02-24-18:47:05                                   Code difference Line 0027 Public (Export-File) of  c l s T e s t A i d...: ' Comm 
+25-02-24-18:47:05  Standard-Module  mFso            Serviced Common Component used is up-to-date                                      
+25-02-24-18:47:11  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public Export-File from the 
+25-02-24-18:55:09 =================================================================================================
+25-02-24-18:55:09  Standard-Module  mFso...........:  Serviced Common Component properties housekeeping:           
+25-02-24-18:55:09                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-24-18:55:09 ====================================================================================================================
+25-02-24-18:55:09  Standard-Module  mTrc            Code difference Line 0257 Serviced (CodeModule)..............:     Open sFileFull 
+25-02-24-18:55:09                                   Code difference Line 0257 Public (Export-File) of  m T r c...:     TxtFile(sFileF 
+25-02-24-18:55:10  Standard-Module  mErH            Serviced Common Component used is up-to-date                                      
+25-02-24-18:55:10  Standard-Module  mDct            Serviced Common Component used is up-to-date                                      
+25-02-24-18:55:10  UserForm         fMsg            Serviced Common Component used is up-to-date                                      
+25-02-24-18:55:10  Standard-Module  mMsg            Code difference Line 0191 Serviced (CodeModule)..............: Public Property Ge 
+25-02-24-18:55:10                                   Code difference Line 0191 Public (Export-File) of  m M s g...: Public Property Ge 
+25-02-24-18:55:10  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                                      
+25-02-24-18:55:10  Class-Module     clsLog          Serviced Common Component used is up-to-date                                      
+25-02-24-18:55:10  Standard-Module  mFso            Serviced Common Component used is up-to-date                                      
+25-02-24-18:55:10  Class-Module     clsTestAid      Code difference Line 0862 Serviced (CodeModule)..........................: Friend 
+25-02-24-18:55:10                                   Code difference Line 0862 Public (Export-File) of  c l s T e s t A i d...: Public 
+25-02-24-18:55:15  Standard-Module  mTrc            Serviced Common Component updated by re-import of the public Export-File from the 
+25-02-24-18:55:18  Standard-Module  mMsg            Serviced Common Component updated by re-import of the public Export-File from the 
+25-02-24-18:55:22  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public Export-File from the 
+25-02-24-18:56:17 =====================================================================================================================================================
+25-02-24-18:56:17 ExportChangedComponents (by CompMan.xlsb) for Fso.xlsb: 0 of 12 exported  (see E:\Sync\Excel VBA\DevAndTest\FSo\CompMan\Services.log for log details)

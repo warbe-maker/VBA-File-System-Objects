@@ -1,8 +1,0 @@
- ================================================================
-  Test Result details: 091-1.1  mFso.PPSectionNames: Section-Names 
- ----------------------------------------------------------------
- |  P/F   | Result | Result Expected 
- +--------+--------+---------------------------------------------
- | Failed | nothing| Section_01
- | Failed | nothing| Section_02
- | Failed | nothing| Section_03

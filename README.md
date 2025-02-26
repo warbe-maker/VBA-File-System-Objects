@@ -5,7 +5,7 @@ Common services regarding files system objects (files and folders).  The module 
 | ----------------------- | -------------------------------------------- |
 | _Exists_                | Existence check service See [below](#exists) |
 
-### Common File services
+### Summary of File services
 
 | Service                 | Description                                |
 | ----------------------- | ------------------------------------------ |
@@ -38,28 +38,9 @@ The service has the following named arguments:
 | _ex\_result\_files_  | Optional, Collection expression.<br>A Collection of file objects with proved  existence |
 
 ### _PrivateProfile File_ services
-Simplifies the handling of .ini, .cfg, or any other file organized by [section] value-name=value. Consequently all services use the following named arguments:
+See the Common Component [clsPrivProf][5]
 
-| Name               | Description                                                                     |
-| ------------------ | ------------------------------------------------------------------------------- |
-| _pp\_file_         | Variant expression, either a _PrivateProfile File's_ full name or a file object |
-| _pp\_section_      | String expression, the name of a _Section_                                      |
-| _pp\_value\_name_  | String expression, the name of a _Value_ under a given _Section_                |
-| _pp\_value_        | Variant expression, will be written to the file as string                       |
-
-| Name              | Service                                      |
-| ------------------| -------------------------------------------- |
-| PPsectionExists   |   Returns TRUE when a given section exists in a given PrivateProfile file |
-| PPsectionNames    | Returns a Dictionary of all section names [.....] in a PrivateProfile file.
-| PPsections        | Get Returns named - or if no names are provided all - sections as Dictionary with the section name as the key and the Values Dictionary as item<br>Let Writes all sections provided as a Dictionary (as above) |
-| PPremoveSections  | Removes the sections provided via their name. When no section names are provided (pp_sections) none are removed.
-| PPreorg           | Reorganizes all sections and their value-names in a PrivateProfile file by ordering everything in ascending sequence.|
-| PPvalue           | Get Reads a named value from a PrivateProfile file<br>Let Writes a named value to a PrivateProfile file |
-| PPvalueNameExists | Returns TRUE when a value-name exists in a PrivatProfile file within a given section |
-| PPvalueNames      | Returns a Dictionary of all value-names within given sections in a PrivateProfile file with the value-name and the section name as key (<name>[section]) and the value as item, the names in ascending order. Section names may be provided as a comma delimited string. a Dictionary or Collection. When no section names are provided all names of all sections are returned |
-| PPvalues          | Returns the value-names and values of a given section in a PrivateProfile file as Dictionary with the value-name as the key (in ascending order) and the value as item.|
-
-### Folder service
+### Summary of Folder service
 | Service                 | Description                                  |
 | ----------------------- | -------------------------------------------- |
 | _FolderIsValidName_     | Returns TRUE when a provided string conforms with the system's requirements for a correct folder path |
@@ -207,3 +188,4 @@ Any kind of contribution is welcome. Respecting the (more or less obvious) codin
 [2]:https://gitcdn.link/cdn/warbe-maker/Common-VBA-Directory-Services/master/source/mDct.bas
 [3]:https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
 [4]:https://github.com/warbe-maker/Common-VBA-File-Sytem-Objects-Services
+[5]:https://github.com/warbe-maker/Common-VBA-Private-Profile-Services

@@ -1,9 +1,0 @@
-24-10-10 15:37:22 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-10-10 15:37:22 seconds seconds >> Begin execution trace 
-24-10-10 15:37:22 00,0000         >> mFsoTest.Test_01_FileTemp
-24-10-10 15:37:22 00,0027         |  >> 01-1.1 Function mFso.FileTemp: Returns a randomly named temporary file
-24-10-10 15:37:22 00,0038 00,0011 |  << 01-1.1 Function mFso.FileTemp: Returns a randomly named temporary file (> Passed )
-24-10-10 15:37:22 00,0046 00,0046 << mFsoTest.Test_01_FileTemp
-24-10-10 15:37:22 00,0046 00,0046 << End execution trace 
-24-10-10 15:37:22                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-10-10 15:37:22                 Impact on the overall performance (caused by the trace itself): 0,8 milliseconds!

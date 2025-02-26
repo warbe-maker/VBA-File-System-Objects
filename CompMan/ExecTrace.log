@@ -1,75 +1,73 @@
-24-10-10 13:31:57 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-10-10 13:31:57 seconds seconds >> Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb
-24-10-10 13:31:57 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
-24-10-10 13:31:57 00,0010         |  |  >> mCompMan.ServiceInitiate
-24-10-10 13:31:57 00,0081         |  |  |  >> clsServiced.MaxLengths
-24-10-10 13:31:57 00,3828 00,3747 |  |  |  << clsServiced.MaxLengths
-24-10-10 13:31:57 00,3856         |  |  |  >> mHskpng.CommComps
-24-10-10 13:31:57 00,4560         |  |  |  |  >> mHskpng.CommCompsPublicObsolete
-24-10-10 13:31:57 00,4802 00,0241 |  |  |  |  << mHskpng.CommCompsPublicObsolete
-24-10-10 13:31:57 00,4839         |  |  |  |  >> mHskpng.CommCompsPublicNew
-24-10-10 13:31:57 00,5081 00,0242 |  |  |  |  << mHskpng.CommCompsPublicNew
-24-10-10 13:31:57 00,5100         |  |  |  |  >> mHskpng.CommCompsServicedHosted
-24-10-10 13:31:57 00,5188 00,0088 |  |  |  |  << mHskpng.CommCompsServicedHosted
-24-10-10 13:31:57 00,5207         |  |  |  |  >> mHskpng.CommCompsServicedNotHosted
-24-10-10 13:31:58 00,5890 00,0683 |  |  |  |  << mHskpng.CommCompsServicedNotHosted
-24-10-10 13:31:58 00,5907         |  |  |  |  >> mHskpng.CommCompsServicedKindOf
-24-10-10 13:31:58 00,6017 00,0110 |  |  |  |  << mHskpng.CommCompsServicedKindOf
-24-10-10 13:31:58 00,6033         |  |  |  |  >> mHskpng.CommCompsServicedObsolete
-24-10-10 13:31:58 00,7201 00,1168 |  |  |  |  << mHskpng.CommCompsServicedObsolete
-24-10-10 13:31:58 00,7218         |  |  |  |  >> mHskpng.CommCompsServicedPendingRelease
-24-10-10 13:31:58 00,7444 00,0225 |  |  |  |  << mHskpng.CommCompsServicedPendingRelease
-24-10-10 13:31:58 00,7461         |  |  |  |  >> mHskpng.CommCompsServicedPendingReleaseOutstanding
-24-10-10 13:31:58 00,9737 00,2277 |  |  |  |  << mHskpng.CommCompsServicedPendingReleaseOutstanding
-24-10-10 13:31:58 00,9769         |  |  |  |  >> mHskpng.CommCompsServicedProperties
-24-10-10 13:31:58 01,3449 00,3680 |  |  |  |  << mHskpng.CommCompsServicedProperties
-24-10-10 13:31:58 01,3469 00,9613 |  |  |  << mHskpng.CommComps
-24-10-10 13:31:58 01,3472 01,3462 |  |  << mCompMan.ServiceInitiate
-24-10-10 13:31:58 01,3474         |  |  >> mCompMan.UpdateOutdatedCommonComponents
-24-10-10 13:31:58 01,3476         |  |  |  >> mCommComps.CollectOutdated
-24-10-10 13:31:59 01,9917 00,6441 |  |  |  << mCommComps.CollectOutdated
-24-10-10 13:32:02 02,0123         |  |  |  >> mCommComps.ChoiceUpdate
-24-10-10 13:32:02 02,0232         |  |  |  |  >> mMe.ByReImport
-24-10-10 13:32:02 02,5181         |  |  |  |  |  >> mMe.OutCommentCode
-24-10-10 13:32:02 02,5919 00,0738 |  |  |  |  |  << mMe.OutCommentCode
-24-10-10 13:32:03 02,7523 00,7291 |  |  |  |  << mMe.ByReImport
-24-10-10 13:32:03 02,8565 00,8442 |  |  |  << mCommComps.ChoiceUpdate
-24-10-10 13:32:03 02,8616 01,5142 |  |  << mCompMan.UpdateOutdatedCommonComponents
+25-02-24 18:55:08 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-24 18:55:08 seconds seconds >> Update Outdated Common Components (by CompMan.xlsb) for Fso.xlsb
+25-02-24 18:55:08 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
+25-02-24 18:55:08 00,0095         |  |  >> mHskpng.FocusOnOpen
+25-02-24 18:55:08 00,0719         |  |  |  >> mHskpng.CommCompsPublicObsolete
+25-02-24 18:55:08 00,0918 00,0199 |  |  |  << mHskpng.CommCompsPublicObsolete
+25-02-24 18:55:08 00,0921         |  |  |  >> mHskpng.CommCompsPublicNew
+25-02-24 18:55:08 00,3032 00,2110 |  |  |  << mHskpng.CommCompsPublicNew
+25-02-24 18:55:08 00,3035         |  |  |  >> mHskpng.CommCompsServicedHosted
+25-02-24 18:55:08 00,3288 00,0253 |  |  |  << mHskpng.CommCompsServicedHosted
+25-02-24 18:55:08 00,3293         |  |  |  >> mHskpng.CommCompsServicedNotHosted
+25-02-24 18:55:08 00,4668 00,1375 |  |  |  << mHskpng.CommCompsServicedNotHosted
+25-02-24 18:55:08 00,4671         |  |  |  >> mHskpng.CommCompsServicedKindOf
+25-02-24 18:55:08 00,4991 00,0319 |  |  |  << mHskpng.CommCompsServicedKindOf
+25-02-24 18:55:08 00,4994         |  |  |  >> mHskpng.CommCompsServicedObsolete
+25-02-24 18:55:09 00,8424 00,3430 |  |  |  << mHskpng.CommCompsServicedObsolete
+25-02-24 18:55:09 00,8427         |  |  |  >> mHskpng.ServiceOutstandingAtOpen
+25-02-24 18:55:09 01,1471 00,3043 |  |  |  << mHskpng.ServiceOutstandingAtOpen
+25-02-24 18:55:09 01,1474         |  |  |  >> mHskpng.CommCompsServicedPendingRelease
+25-02-24 18:55:09 01,1507 00,0033 |  |  |  << mHskpng.CommCompsServicedPendingRelease
+25-02-24 18:55:09 01,1509         |  |  |  >> mHskpng.CommCompsServicedProperties
+25-02-24 18:55:09 01,7538 00,6029 |  |  |  << mHskpng.CommCompsServicedProperties
+25-02-24 18:55:09 01,7542 01,7447 |  |  << mHskpng.FocusOnOpen
+25-02-24 18:55:09 01,7544         |  |  >> mCompMan.UpdateOutdatedCommonComponents
+25-02-24 18:55:09 01,7546         |  |  |  >> mCommComps.CollectOutdated
+25-02-24 18:55:10 02,4928 00,7382 |  |  |  << mCommComps.CollectOutdated
+25-02-24 18:55:13 02,5729         |  |  |  >> mCommComps.ChoiceUpdate
+25-02-24 18:55:13 02,5951         |  |  |  |  >> mMe.ByReImport
+25-02-24 18:55:14 02,9743         |  |  |  |  |  >> mMe.OutCommentCode
+25-02-24 18:55:14 03,4340 00,4596 |  |  |  |  |  << mMe.OutCommentCode
+25-02-24 18:55:14 03,6048 01,0097 |  |  |  |  << mMe.ByReImport
+25-02-24 18:55:15 03,8381 01,2652 |  |  |  << mCommComps.ChoiceUpdate
+25-02-24 18:55:17 03,9023         |  |  |  >> mCommComps.ChoiceUpdate
+25-02-24 18:55:17 03,9170         |  |  |  |  >> mMe.ByReImport
+25-02-24 18:55:18 04,2992         |  |  |  |  |  >> mMe.OutCommentCode
+25-02-24 18:55:18 04,3607 00,0614 |  |  |  |  |  << mMe.OutCommentCode
+25-02-24 18:55:18 04,5166 00,5997 |  |  |  |  << mMe.ByReImport
+25-02-24 18:55:18 04,6371 00,7348 |  |  |  << mCommComps.ChoiceUpdate
+25-02-24 18:55:21 04,6793         |  |  |  >> mCommComps.ChoiceUpdate
+25-02-24 18:55:21 04,6943         |  |  |  |  >> mMe.ByReImport
+25-02-24 18:55:21 05,1073         |  |  |  |  |  >> mMe.OutCommentCode
+25-02-24 18:55:22 05,2786 00,1713 |  |  |  |  |  << mMe.OutCommentCode
+25-02-24 18:55:22 05,4295 00,7353 |  |  |  |  << mMe.ByReImport
+25-02-24 18:55:22 05,5549 00,8756 |  |  |  << mCommComps.ChoiceUpdate
+25-02-24 18:55:22 05,5598 03,8054 |  |  << mCompMan.UpdateOutdatedCommonComponents
 ===========================================================================================================================================
-24-10-10 15:35:30 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-10-10 15:35:30 seconds seconds >> Export Changed Components (by CompMan.xlsb) for Fso.xlsb
-24-10-10 15:35:30 00,0000         |  >> mCompMan.ExportChangedComponents
-24-10-10 15:35:30 00,0007         |  |  >> mCompMan.ServiceInitiate
-24-10-10 15:35:30 00,0022         |  |  |  >> clsServiced.MaxLengths
-24-10-10 15:35:30 00,2309 00,2287 |  |  |  << clsServiced.MaxLengths
-24-10-10 15:35:30 00,2329         |  |  |  >> mHskpng.CommComps
-24-10-10 15:35:30 00,2646         |  |  |  |  >> mHskpng.CommCompsPublicObsolete
-24-10-10 15:35:30 00,2860 00,0213 |  |  |  |  << mHskpng.CommCompsPublicObsolete
-24-10-10 15:35:30 00,2878         |  |  |  |  >> mHskpng.CommCompsPublicNew
-24-10-10 15:35:30 00,3100 00,0222 |  |  |  |  << mHskpng.CommCompsPublicNew
-24-10-10 15:35:30 00,3122         |  |  |  |  >> mHskpng.CommCompsServicedHosted
-24-10-10 15:35:30 00,3208 00,0085 |  |  |  |  << mHskpng.CommCompsServicedHosted
-24-10-10 15:35:30 00,3226         |  |  |  |  >> mHskpng.CommCompsServicedNotHosted
-24-10-10 15:35:30 00,3876 00,0651 |  |  |  |  << mHskpng.CommCompsServicedNotHosted
-24-10-10 15:35:30 00,3894         |  |  |  |  >> mHskpng.CommCompsServicedKindOf
-24-10-10 15:35:30 00,4005 00,0111 |  |  |  |  << mHskpng.CommCompsServicedKindOf
-24-10-10 15:35:30 00,4022         |  |  |  |  >> mHskpng.CommCompsServicedObsolete
-24-10-10 15:35:30 00,5206 00,1184 |  |  |  |  << mHskpng.CommCompsServicedObsolete
-24-10-10 15:35:30 00,5226         |  |  |  |  >> mHskpng.CommCompsServicedPendingRelease
-24-10-10 15:35:30 00,5451 00,0225 |  |  |  |  << mHskpng.CommCompsServicedPendingRelease
-24-10-10 15:35:30 00,5472         |  |  |  |  >> mHskpng.CommCompsServicedPendingReleaseOutstanding
-24-10-10 15:35:30 00,7681 00,2209 |  |  |  |  << mHskpng.CommCompsServicedPendingReleaseOutstanding
-24-10-10 15:35:30 00,7713         |  |  |  |  >> mHskpng.CommCompsServicedProperties
-24-10-10 15:35:31 01,1176 00,3463 |  |  |  |  << mHskpng.CommCompsServicedProperties
-24-10-10 15:35:31 01,1193 00,8864 |  |  |  << mHskpng.CommComps
-24-10-10 15:35:31 01,1196 01,1189 |  |  << mCompMan.ServiceInitiate
-24-10-10 15:35:31 01,1975         |  |  >> clsServices.ExportChangedComponents
-24-10-10 15:35:31 01,1978         |  |  |  >> mExport.ChangedComponents
-24-10-10 15:35:32 02,1453         |  |  |  |  >> mHskpng.RemoveServiceRemains
-24-10-10 15:35:32 02,1485 00,0032 |  |  |  |  << mHskpng.RemoveServiceRemains
-24-10-10 15:35:32 02,1977 00,9999 |  |  |  << mExport.ChangedComponents
-24-10-10 15:35:32 02,1981 01,0006 |  |  << clsServices.ExportChangedComponents
-24-10-10 15:35:32 02,1984 02,1984 |  << mCompMan.ExportChangedComponents
-24-10-10 15:35:32 02,1984 02,1984 << Export Changed Components (by CompMan.xlsb) for Fso.xlsb
-24-10-10 15:35:32                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-10-10 15:35:32                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+25-02-24 18:56:15 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-24 18:56:15 seconds seconds >> Export Changed Components (by CompMan.xlsb) for Fso.xlsb
+25-02-24 18:56:15 00,0000         |  >> mCompMan.ExportChangedComponents
+25-02-24 18:56:15 00,0018         |  |  >> mHskpng.FocusOnSave
+25-02-24 18:56:15 00,0354         |  |  |  >> mHskpng.CommCompsPublicObsolete
+25-02-24 18:56:15 00,0669 00,0315 |  |  |  << mHskpng.CommCompsPublicObsolete
+25-02-24 18:56:15 00,0673         |  |  |  >> mHskpng.CommCompsPublicNew
+25-02-24 18:56:15 00,3660 00,2987 |  |  |  << mHskpng.CommCompsPublicNew
+25-02-24 18:56:15 00,3663         |  |  |  >> mHskpng.CommCompsServicedHosted
+25-02-24 18:56:15 00,3856 00,0193 |  |  |  << mHskpng.CommCompsServicedHosted
+25-02-24 18:56:15 00,3859         |  |  |  >> mHskpng.CommCompsServicedNotHosted
+25-02-24 18:56:15 00,5202 00,1342 |  |  |  << mHskpng.CommCompsServicedNotHosted
+25-02-24 18:56:15 00,5205         |  |  |  >> mHskpng.CommCompsServicedKindOf
+25-02-24 18:56:15 00,5519 00,0314 |  |  |  << mHskpng.CommCompsServicedKindOf
+25-02-24 18:56:15 00,5522         |  |  |  >> mHskpng.CommCompsServicedObsolete
+25-02-24 18:56:16 00,9147 00,3625 |  |  |  << mHskpng.CommCompsServicedObsolete
+25-02-24 18:56:16 00,9150 00,9132 |  |  << mHskpng.FocusOnSave
+25-02-24 18:56:16 01,0009         |  |  >> clsServicing.ExportChangedComponents
+25-02-24 18:56:16 01,0012         |  |  |  >> mExport.ChangedComponents
+25-02-24 18:56:17 01,6891         |  |  |  |  >> mHskpng.RemoveServiceRemains
+25-02-24 18:56:17 01,6895 00,0005 |  |  |  |  << mHskpng.RemoveServiceRemains
+25-02-24 18:56:17 01,6909 00,6898 |  |  |  << mExport.ChangedComponents
+25-02-24 18:56:17 01,6912 00,6903 |  |  << clsServicing.ExportChangedComponents
+25-02-24 18:56:17 01,6914 01,6914 |  << mCompMan.ExportChangedComponents
+25-02-24 18:56:17 01,6914 01,6914 << Export Changed Components (by CompMan.xlsb) for Fso.xlsb
+25-02-24 18:56:17                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-24 18:56:17                 Impact on the overall performance (caused by the trace itself): 0,2 milliseconds!

@@ -10,7 +10,8 @@ Option Explicit
 Private Const SECTION_NAME  As String = "Section-"  ' for PrivateProfile services test
 Private Const VALUE_NAME    As String = "-Name-"    ' for PrivateProfile services test
 Private Const VALUE_STRING  As String = "-Value-"   ' for PrivateProfile services test
-Private Tests             As clsTestAid
+Private Tests               As clsTestAid
+Private bRegression         As Boolean
 
 '~~ When the a copy of VarTrans and all its depending Functions is used in a VB-Project,
 '~~ e.g. to provide an independency of a module, this will have to be copied in a
@@ -193,27 +194,27 @@ Public Sub Test_00_Regression()
     Dim sTestStatus As String
     
     '~~ Initialization (must be done prior the first BoP!)
+    bRegression = True
     Set Tests = Nothing
     Set Tests = New clsTestAid
     mTrc.FileFullName = Tests.TestFolder & "\Regression.ExecTrace.log"
     mTrc.Title = "Regression Test module ""mVarTrans"""
     mTrc.NewFile
-    mErH.Regression = True
+    mErH.Regression = bRegression
     With Tests
-        .ModeRegression = True
         .TestedComp = "mFso"
-        .CleanUp "FailedResult_", "rad" ' cleanup any previous regression test results/remains.
+'        .CleanUp "FailedResult_", "rad" ' cleanup any previous regression test results/remains.
     End With
     mErH.Asserted AppErr(1) ' For the very last test on an error condition
     
     BoP ErrSrc(PROC)
     mFsoTest.Test_01_FileTemp
-    mFsoTest.Test_02_File_Exists
+    mFsoTest.Test_02_Exists
     mFsoTest.Test_04_FilePicked
     mFsoTest.Test_05_FileString
     mFsoTest.Test_06_FileDiffersFromFile
-'    mFsoTest.Test_08_FileArry_Get_Let
-'    mFsoTest.Test_09_FileSearch
+    mFsoTest.Test_08_FileAsArry_ArrayAsFile
+    mFsoTest.Test_09_FileSearch
 '    mFsoTest.Test_10_FolderIsValidName
 '    mFsoTest.Test_11_Folders
 '    mFsoTest.Test_12_RenameSubFolders
@@ -221,9 +222,8 @@ Public Sub Test_00_Regression()
 xt: EoP ErrSrc(PROC)
     mTrc.Dsply
     Application.Wait Now() + 0.00001 ' wait to enforce display of the summary in front
-    Tests.ResultSummaryLog
+    Tests.ResultLogSummary
     mErH.Regression = False
-    Set Tests = Nothing
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -243,16 +243,17 @@ Public Sub Test_01_FileTemp()
     Prepare
     BoP ErrSrc(PROC)
     With Tests
-        .TestNumber = "01-1"
-        .TestHeadLine = "FileTemp service"
+        .TestId = "01"
+        .Title = "FileTemp service"
         .TestedProc = "FileTemp"
-        .TestedType = "Function"
+        .TestedProcType = "Function"
+        
         .Verification = "Returns a randomly named temporary file"
-        .BoTP
-        sTemp = mFso.FileTemp(f_path:=ThisWorkbook.Path)
-        .ResultExpected = sTemp
-        .Result = sTemp
-        .EoTP
+            .TimerStart
+            sTemp = mFso.FileTemp(f_path:=ThisWorkbook.Path)
+            .TimerEnd
+            .ResultExpected = sTemp
+            .Result = sTemp
     End With
     
 xt: EoP ErrSrc(PROC)
@@ -264,11 +265,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_02_File_Exists()
+Public Sub Test_02_Exists()
 ' ----------------------------------------------------------------------------
 ' Test of all file exists variants.
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_02_File_Exists"
+    Const PROC = "Test_02_Exists"
     
     On Error GoTo eh
     Dim cll         As Collection
@@ -278,73 +279,60 @@ Public Sub Test_02_File_Exists()
     BoP ErrSrc(PROC)
     
     With Tests
-        .TestNumber = "02-1"
-        .TestHeadLine = "Exists service"
+        .TestId = "02"
+        .Title = "Exists service"
         .TestedProc = "Exists"
-        .TestedType = "Function"
+        .TestedProcType = "Function"
+        
         .Verification = "Folder not exists"
-        .ResultExpected = False
-        .BoTP
-        .Result = mFso.Exists(x_folder:=ThisWorkbook.Path & "x")
-        .EoTP
-        ' ====================================================================
+            .TimerStart
+            .Result = mFso.Exists(ThisWorkbook.Path & "x")
+            .TimerEnd
+            .ResultExpected = False
     
-        .TestNumber = "02-2"
-        .TestedProc = "Exists"
         .Verification = "Folder exists"
-        .ResultExpected = True
-        .BoTP
-        .Result = mFso.Exists(x_folder:=ThisWorkbook.Path)
-        .EoTP
-        ' ====================================================================
+            .TimerStart
+            .Result = mFso.Exists(ThisWorkbook.Path)
+            .TimerEnd
+            .ResultExpected = True
     
-        .TestNumber = "02-3"
-        .TestedProc = "Exists"
         .Verification = "File not exists"
-        .ResultExpected = False
-        .BoTP
-        .Result = mFso.Exists(x_file:=ThisWorkbook.FullName & "x")
-        .EoTP
-        ' ====================================================================
+            .TimerStart
+            .Result = mFso.Exists(e_file:=ThisWorkbook.FullName & "x")
+            .TimerEnd
+            .ResultExpected = False
     
-        .TestNumber = "02-4"
-        .TestedProc = "Exists"
         .Verification = "File exists"
-        .ResultExpected = True
-        .BoTP
-        .Result = mFso.Exists(x_file:=ThisWorkbook.FullName)
-        .EoTP
-        ' ====================================================================
-    
-        .TestNumber = "02-5"
-        .TestedProc = "Exists"
+            .TimerStart
+            .Result = mFso.Exists(e_file:=ThisWorkbook.FullName)
+            .TimerEnd
+            .ResultExpected = True
+        
         .Verification = "File by wildcard "
-        .ResultExpected = 1
-        .BoTP
-        mFso.Exists x_folder:=ThisWorkbook.Path _
-                           , x_file:="*.xl*" _
-                           , x_result_files:=cll
-        .Result = cll.Count
-        .EoTP
-        ' ====================================================================
+            .TimerStart
+            mFso.Exists e_folder:=ThisWorkbook.Path _
+                      , e_file:="*.xl*" _
+                      , e_result_files:=cll
+            .TimerEnd
+            .Result = cll.Count
+            .ResultExpected = 2
         
-        .TestNumber = "02-6"
-        .TestedProc = "Exists"
         .Verification = "File by wildcard in sub-folders"
-        .ResultExpected = 2
-        .BoTP
-        mFso.Exists x_folder:=ThisWorkbook.Path _
-                           , x_file:="fMsg.fr*" _
-                           , x_result_files:=cll
-        .Result = cll.Count
-        .EoTP
+            .TimerStart
+            mFso.Exists e_folder:=ThisWorkbook.Path & "\CompMan\source" _
+                      , e_file:="fMsg.fr*" _
+                      , e_result_files:=cll
+            .TimerEnd
+            .Result = cll.Count
+            .ResultExpected = 2
+            
+        .Verification = "File by wildcard in sub-folders"
+            .Result = cll(1).Name
+            .ResultExpected = "fMsg.frm"
         
-        .ResultExpected = "fMsg.frm"
-        .Result = cll(1).Name
-    
-        .ResultExpected = "fMsg.frx"
-        .Result = cll(2).Name
-        ' ====================================================================
+        .Verification = "File by wildcard in sub-folders"
+            .Result = cll(2).Name
+            .ResultExpected = "fMsg.frx"
         
     End With
                         
@@ -370,32 +358,30 @@ Public Sub Test_04_FilePicked()
     BoP ErrSrc(PROC)
     
     With Tests
-        .TestNumber = "04-1"
-        .TestHeadLine = "FilePicked service"
+        .TestId = "04"
+        .Title = "FilePicked service"
         .TestedProc = "FilePicked"
-        .Verification = "ThisWorkbook is picked"
-        .ResultExpected = ThisWorkbook.FullName
-        .BoTP
-        mFso.FilePicked p_init_path:=ThisWorkbook.Path _
-                      , p_filters:="Excel file, *.xl*; All files, *.*" _
-                      , p_title:="Test " & .TestNumber & ": Select the Excel Workbook in this folder (folder preselected by filter)" _
-                     , p_file:=fl
-        .Result = fl.Path
-        .EoTP
-        ' ====================================================================
+        .TestedProcType = "Function"
         
-        .TestNumber = "04-2"
-        .TestedProc = "FilePicked"
+        .Verification = "ThisWorkbook is picked"
+            .TimerStart
+            mFso.FilePicked p_init_path:=ThisWorkbook.Path _
+                          , p_filters:="Excel file, *.xl*; All files, *.*" _
+                          , p_title:="Test " & .TestId & ": Select the Excel Workbook in this folder (folder preselected by filter)" _
+                         , p_file:=fl
+            .TimerEnd
+            .Result = fl.Path
+            .ResultExpected = ThisWorkbook.FullName
+        
         .Verification = "No file picked"
-        .ResultExpected = "Nothing"
-        .BoTP
-        mFso.FilePicked p_init_path:=ThisWorkbook.Path _
-                      , p_filters:="Excel file, *.xl*; All files, *.*" _
-                      , p_title:="Test 2: No file picked (just  t e r m i n a t e  the dialog)" _
-                      , p_file:=fl
-        .Result = TypeName(fl)
-        .EoTP
-        ' ====================================================================
+            .TimerStart
+            mFso.FilePicked p_init_path:=ThisWorkbook.Path _
+                          , p_filters:="Excel file, *.xl*; All files, *.*" _
+                          , p_title:="Test 2: No file picked (just  t e r m i n a t e  the dialog)" _
+                          , p_file:=fl
+            .TimerEnd
+            .Result = TypeName(fl)
+            .ResultExpected = "Nothing"
         
     End With
     
@@ -415,70 +401,60 @@ Public Sub Test_05_FileString()
     Const PROC = "Test_05_FileString"
     
     On Error GoTo eh
-    Dim sFl     As String
+    Dim sFile1  As String
     Dim sTest   As String
     Dim sResult As String
     Dim sSplit  As String
-    Dim oFl     As File
+    Dim fle1    As File
     
     Prepare
     BoP ErrSrc(PROC)
     
     With Tests
-        .TestNumber = "05-1"
-        .TestHeadLine = "FileString service"
-        .TestedProc = "FileString"
-        .TestedType = "Property"
+        .TestId = "05"
+        .Title = "String as File, File as String service"
+        .TestedProc = "FileAsString, StringAsFile"
+        .TestedProcType = "Function"
+        
         .Verification = "Write/read one recod"
-        sFl = mFso.FileTemp()
-        sTest = "My string"
-        .ResultExpected = sTest
-        '~~ Write
-        mFso.FileString(sFl) = sTest
-        '~~ Read
-        .Result = mFso.FileString(sFl)
-        .TestItem = sFl
-        ' ====================================================================
+            sFile1 = mFso.FileTemp()
+            sTest = "My string"
+            '~~ Write
+            mFso.StringAsFile sTest, sFile1
+            '~~ Read
+            .Result = mFso.FileAsString(sFile1)
+            .ResultExpected = sTest
+            .TempTestItem = sFile1
         
-        .TestNumber = "05-2"
-        .TestedProc = "FileString"
-        .TestedType = "Property"
         .Verification = "Empty file"
-        .ResultExpected = vbNullString
-        sFl = mFso.FileTemp()
-        sTest = vbNullString
-        mFso.FileString(sFl) = sTest
-        sResult = mFso.FileString(sFl)
-        .TestItem = sFl
+            sFile1 = mFso.FileTemp()
+            .TempTestItem = sFile1
+            sTest = vbNullString
+            mFso.StringAsFile sTest, sFile1
+            sResult = mFso.FileAsString(sFile1)
+            .ResultExpected = vbNullString
     
-        .TestNumber = "05-3"
-        .TestedProc = "FileString"
-        .TestedType = "Property"
         .Verification = "Append"
-        .ResultExpected = "AAA" & vbCrLf & "BBB" & vbCrLf & "CCC"
-        sFl = mFso.FileTemp()
-        .BoTP
-        mFso.FileString(sFl, False) = "AAA" & vbCrLf & "BBB"
-        mFso.FileString(sFl, True) = "CCC"
-        .Result = mFso.FileString(sFl)
-        .EoTP
-        .TestItem = sFl
-        ' ====================================================================
+            sFile1 = mFso.FileTemp()
+            .TempTestItem = sFile1
+            .TimerStart
+            mFso.StringAsFile "AAA" & vbCrLf & "BBB", sFile1, False
+            mFso.StringAsFile "CCC", sFile1, True
+            .TimerEnd
+            .Result = mFso.FileAsString(sFile1)
+            .ResultExpected = "AAA" & vbCrLf & "BBB" & vbCrLf & "CCC"
         
-        .TestNumber = "05-4"
-        .TestedProc = "FileString"
-        .TestedType = "Property"
-        .Verification = "Write with append and read with file as object"
-        .ResultExpected = "AAA" & vbCrLf & "BBB" & vbCrLf & "CCC"
-        sFl = mFso.FileTemp()
-        FSo.CreateTextFile FileName:=sFl
-        Set oFl = FSo.GetFile(sFl)
-        mFso.FileString(f_file_full_name:=oFl, f_append:=False) = "AAA" & vbCrLf & "BBB"
-        mFso.FileString(f_file_full_name:=oFl, f_append:=True) = "CCC"
-        .BoTP
-        .Result = mFso.FileString(oFl)
-        .TestItem = sFl
-        ' ====================================================================
+        .Verification = "Write string to file with append, file as object"
+            sFile1 = mFso.FileTemp()
+            .TempTestItem = sFile1
+            fso.CreateTextFile FileName:=sFile1
+            Set fle1 = fso.GetFile(sFile1)
+            .TimerStart
+            mFso.StringAsFile "AAA" & vbCrLf & "BBB", fle1, False
+            mFso.StringAsFile "CCC", fle1, True
+            .TimerEnd
+            .Result = mFso.FileAsString(fle1)
+            .ResultExpected = "AAA" & vbCrLf & "BBB" & vbCrLf & "CCC"
     
     End With
 xt: EoP ErrSrc(PROC)
@@ -510,74 +486,68 @@ Public Sub Test_06_FileDiffersFromFile()
     BoP ErrSrc(PROC)
     
     With Tests
-        .TestNumber = "06-1"
-        .TestHeadLine = "FileDiffersFromFile service"
+        .TestId = "06-1"
+        .Title = "FileDiffersFromFile service"
         .TestedProc = "FileDiffersFromFile"
+        
         .Verification = "Differs = False"
-        .ResultExpected = False
-        mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-        mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-        Set f1 = FSo.GetFile(sF1)
-        Set f2 = FSo.GetFile(sF2)
-        .BoTP
-        .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
-                                         , f_file_from:=f2 _
-                                         , f_exclude_empty:=True _
-                                          )
-        .EoTP
-        ' ====================================================================
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C", sF1, False
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C", sF2, False
+            Set f1 = fso.GetFile(sF1)
+            Set f2 = fso.GetFile(sF2)
+            .TimerStart
+            .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                             , f_file_from:=f2 _
+                                             , f_exclude_empty:=True _
+                                              )
+            .TimerEnd
+            .ResultExpected = False
         
-        .TestNumber = "06-2"
         .Verification = "Differs = True"
-        .ResultExpected = True
-        mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-        mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
-        Set f1 = FSo.GetFile(sF1)
-        Set f2 = FSo.GetFile(sF2)
-        .BoTP
-        .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
-                                         , f_file_from:=f2 _
-                                         , f_exclude_empty:=True _
-                                          )
-        .EoTP
-        ' ====================================================================
+            .ResultExpected = True
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C", sF1, False
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D", sF2, False
+            Set f1 = fso.GetFile(sF1)
+            Set f2 = fso.GetFile(sF2)
+            .TimerStart
+            .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                             , f_file_from:=f2 _
+                                             , f_exclude_empty:=True _
+                                              )
+            .TimerEnd
         
-        .TestNumber = "06-3"
         .Verification = "Differs = True"
-        .ResultExpected = True
-        ' Test 3: Differs.Count = 1
-        mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D"
-        mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-        Set f1 = FSo.GetFile(sF1)
-        Set f2 = FSo.GetFile(sF2)
-        .BoTP
-        .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
-                                         , f_file_from:=f2 _
-                                         , f_exclude_empty:=True _
-                                          )
-        .EoTP
-        ' ====================================================================
+            .ResultExpected = True
+            ' Test 3: Differs.Count = 1
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C" & vbCrLf & "D", sF1, False
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C", sF2, False
+            Set f1 = fso.GetFile(sF1)
+            Set f2 = fso.GetFile(sF2)
+            .TimerStart
+            .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                             , f_file_from:=f2 _
+                                             , f_exclude_empty:=True _
+                                              )
+            .TimerEnd
         
-        .TestNumber = "06-4"
         .Verification = "Differs = True"
-        .ResultExpected = True
-        mFso.FileString(f_file_full_name:=sF1, f_append:=False) = "A" & vbCrLf & "B" & vbCrLf & "C"
-        mFso.FileString(f_file_full_name:=sF2, f_append:=False) = "A" & vbCrLf & "X" & vbCrLf & "C"
-        Set f1 = FSo.GetFile(sF1)
-        Set f2 = FSo.GetFile(sF2)
-        .BoTP
-        .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
-                                         , f_file_from:=f2 _
-                                         , f_exclude_empty:=True _
-                                          )
-        .EoTP
-        ' ====================================================================
+            mFso.StringAsFile "A" & vbCrLf & "B" & vbCrLf & "C", sF1, False
+            mFso.StringAsFile "A" & vbCrLf & "X" & vbCrLf & "C", sF2, False
+            Set f1 = fso.GetFile(sF1)
+            Set f2 = fso.GetFile(sF2)
+            .TimerStart
+            .Result = mFso.FileDiffersFromFile(f_file_this:=f1 _
+                                             , f_file_from:=f2 _
+                                             , f_exclude_empty:=True _
+                                              )
+            .TimerEnd
+            .ResultExpected = True
     
     End With
     
 xt: EoP ErrSrc(PROC)
-    If FSo.FileExists(sF1) Then FSo.DeleteFile (sF1)
-    If FSo.FileExists(sF2) Then FSo.DeleteFile (sF2)
+    If fso.FileExists(sF1) Then fso.DeleteFile (sF1)
+    If fso.FileExists(sF2) Then fso.DeleteFile (sF2)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -586,79 +556,56 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
   
-Public Sub Test_08_FileArry_Get_Let()
+Public Sub Test_08_FileAsArry_ArrayAsFile()
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
     Const PROC = "Test_08_FileArry_Get_Let"
     
     On Error GoTo eh
-    Dim sFile1      As String
-    Dim sFile2      As String
-    Dim sTestFile   As String
-    Dim lInclEmpty  As Long
-    Dim lEmpty1     As Long
-    Dim lExclEmpty  As Long
-    Dim lEmpty2     As Long
-    Dim aTestArray  As Variant
-    Dim v           As Variant
+    Dim arry    As Variant
+    Dim fle     As File
+    Dim sFile   As String
     
     Prepare
     BoP ErrSrc(PROC)
     With Tests
-        .TestNumber = "08-1"
-        .TestHeadLine = "FileArry service"
-        .TestedProc = "FileArry-Get"
-        .TestedType = "Property"
-        .Verification = "Get file content as array"
-        .ResultExpected = FSo.GetFile(FSo.GetFolder(ThisWorkbook.Path).ParentFolder & "\Common-Components\mFso.bas")
-        .BoTP
-        .Result = mFso.FileArry(f_file_full_name:=FSo.GetFolder(ThisWorkbook.Path).ParentFolder & "\Common-Components\mFso.bas")
-        .EoTP
-        ' ====================================================================
-    
-        .TestNumber = "08-2"
-        .TestedProc = "FileArry-Let"
+        .CleanUp
+        .TestId = "08"
+        .Title = "File as array, array as file service"
+        .TestedProcType = "Function"
+        
         .Verification = "Write file from array"
-        .ResultExpected = "xxx" & vbCrLf & "yyy"
-        '~~ Write array to file-2
-        sTestFile = .TempFile
-        .TimerStart
-        mFso.FileArry(f_file_full_name:=sTestFile _
-                     ) = aTestArray
-        .TimerEnd
-        .Result = FSo.GetFile(sTestFile)
-        .TestItem = sTestFile
-        ' ====================================================================
-    
-        .TestNumber = "08-2"
-        .TestedProc = "FileArry-Get"
+            .TestedProc = "ArryAsFile"
+            sFile = .TempFileFullName
+            .TimerStart
+            Set fle = mFso.ArrayAsFile(Array("xxx", vbNullString, "yyy"), sFile)
+            .TimerEnd
+            .Result = mFso.FileAsArray(fle)
+            .ResultExpected = Array("xxx", vbNullString, "yyy")
+         
         .Verification = "Read file to array exclude empty false"
-        .ResultExpected = 2
-        .BoTP
-        aTestArray = mFso.FileArry(f_file_full_name:=sFile1, f_exclude_empty:=False)
-        .Result = UBound(aTestArray) + 1
-        .EoTP
-        ' ====================================================================
+            .TestedProc = "FileAsArry"
+            sFile = .TempFileFullName
+            Set fle = mFso.ArrayAsFile(Array("xxx", vbNullString, "yyy"), sFile)
+            .TimerStart
+            arry = mFso.FileAsArray(fle, False)
+            .TimerEnd
+            .Result = UBound(arry) - LBound(arry) + 1
+            .ResultExpected = 3
             
-        .TestNumber = "08-2"
-        .TestedProc = "FileArry-Get"
-        .Verification = "Read file to array exclude empty true"
-        .ResultExpected = 2
-        sTestFile = .TempFile
-        mFso.FileArry(sTestFile) = Split("aaa,,bbb", ",")
-        aTestArray = mFso.FileArry(f_file_full_name:=sFile1, f_exclude_empty:=True)
-        .Result = UBound(aTestArray) + 1
-        .TestItem = sTestFile
-        ' ====================================================================
-                
+        .Verification = "Retrurn a file as array with empty items excluded"
+            .TestedProc = "ArryAsFile"
+            sFile = .TempFileFullName
+            Set fle = mFso.ArrayAsFile(Array("xxx", vbNullString, , "yyy"), sFile)
+            arry = mFso.FileAsArray(fle, True)
+            .Result = UBound(arry) - LBound(arry) + 1
+            .ResultExpected = 2
+            
+            .CleanUp
     End With
         
-xt: With FSo
-        .DeleteFile sFile1
-        If .FileExists(sFile2) Then .DeleteFile sFile2
-    End With
-    EoP ErrSrc(PROC)
+xt: EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -679,21 +626,29 @@ Public Sub Test_09_FileSearch()
     BoP ErrSrc(PROC)
     Prepare
     
-    '~~ Test 1: Including subfolders, several files found
-    Set cll = mFso.FilesSearch(f_root:=FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\" _
-                             , f_mask:="*.bas*" _
-                             , f_stop_after:=5 _
-                              )
-    Debug.Assert cll.Count > 2
-
-    '~~ Test 2: Not including subfolders, no files found
-    Set cll = mFso.FilesSearch(f_root:="e:\Ablage\Excel VBA\DevAndTest\Common" _
-                             , f_mask:="*CompMan*.frx" _
-                             , f_stop_after:=5 _
-                             , f_in_subfolders:=False _
-                              )
-    Debug.Assert cll.Count = 0
-
+    With Tests
+        .TestId = "09"
+        .Title = "Test of FileSearch"
+        .TestedProc = "FileSearch"
+        .TestedProcType = "Function"
+        
+        .Verification = "File search with wildcards, including subfolders, several files found"
+            Set cll = mFso.FilesSearch(f_root:=fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path & "\Common-Components\" _
+                                    , f_mask:="*.bas*" _
+                                    , f_in_subfolders:=True _
+                                      )
+            .Result = cll.Count
+            .ResultExpected = cll.Count
+    
+        .Verification = "File search with wildcards, subfolders excluded, no files found"
+            .Result = mFso.FilesSearch(f_root:="e:\Ablage\Excel VBA\DevAndTest\Common" _
+                                     , f_mask:="*CompMan*.frx" _
+                                     , f_in_subfolders:=False _
+                                      ).Count
+            .ResultExpected = 0
+            
+    End With
+    
 xt: EoP ErrSrc(PROC)
     Exit Sub
 
@@ -729,7 +684,7 @@ Public Sub Test_11_Folders()
     Dim TestFolder As String
     
     BoP ErrSrc(PROC)
-    TestFolder = FSo.GetFolder(ThisWorkbook.Path).ParentFolder.Path
+    TestFolder = fso.GetFolder(ThisWorkbook.Path).ParentFolder.Path
     
     Dim v       As Variant
     Dim cll     As Collection
@@ -810,7 +765,7 @@ End Sub
 Private Sub Test_12_RenameSubFolders_Prepare(ByVal s_path As String, _
                                              ByVal s_folder_old_name As String)
                                              
-    With FSo
+    With fso
         If .FolderExists(s_path) Then .DeleteFolder s_path
         .CreateFolder s_path
         .CreateFolder s_path & "\Test1"
